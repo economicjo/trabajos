@@ -1,0 +1,170 @@
+{
+  "developers": {
+    "PWojtanowski": "pwojtanowski@future-processing.com",
+    "PJaworski": "pjaworski2@future-processing.com",
+    "DNowak": "dnowak3@future-processing.com",
+    "ASitko": "asitko@future-processing.com",
+    "HSchlee": "h.schlee@21.finance",
+    "MSledzinski": "msledzinski@future-processing.com",
+    "NKantoch": "nkantoch@future-processing.com",
+    "SSuresh": "s.suresh@21.finance",
+    "DBurllaile": "djburllaile@gmail.com"
+  },
+  "secretPassword": "",
+  "ecr-access-accounts": [
+    "850482027158"
+  ],
+  "load-balancer:account=850482027158:loadBalancerArn=arn$:aws:elasticloadbalancing:eu-central-1:850482027158:loadbalancer/app/k8s-serviceportalgrou-58eeffcb0f/3f5a0b52ae870d7d:loadBalancerType=application:region=eu-central-1": {
+    "loadBalancerArn": "arn:aws:elasticloadbalancing:eu-central-1:850482027158:loadbalancer/app/k8s-serviceportalgrou-58eeffcb0f/3f5a0b52ae870d7d",
+    "loadBalancerCanonicalHostedZoneId": "Z215JYRZR1TBD5",
+    "loadBalancerDnsName": "k8s-serviceportalgrou-58eeffcb0f-813144694.eu-central-1.elb.amazonaws.com",
+    "vpcId": "vpc-0da29452ce6c52634",
+    "securityGroupIds": [
+      "sg-0157c0729ede03961",
+      "sg-00770d30740e4b0bc"
+    ],
+    "ipAddressType": "ipv4"
+  },
+  "vpc-provider:account=850482027158:filter.vpc-id=vpc-0da29452ce6c52634:region=eu-central-1:returnAsymmetricSubnets=true": {
+    "vpcId": "vpc-0da29452ce6c52634",
+    "vpcCidrBlock": "10.0.0.0/22",
+    "availabilityZones": [],
+    "subnetGroups": [
+      {
+        "name": "SubnetPrvNat0",
+        "type": "Private",
+        "subnets": [
+          {
+            "subnetId": "subnet-0a1698dab416c9b6b",
+            "cidr": "10.0.2.0/24",
+            "availabilityZone": "eu-central-1a",
+            "routeTableId": "rtb-00a696c48d4251821"
+          },
+          {
+            "subnetId": "subnet-067663af19e001b67",
+            "cidr": "10.0.3.0/24",
+            "availabilityZone": "eu-central-1b",
+            "routeTableId": "rtb-036f5d6a5c0c2c35c"
+          }
+        ]
+      },
+      {
+        "name": "SubnetPub0",
+        "type": "Public",
+        "subnets": [
+          {
+            "subnetId": "subnet-0fce703d258686e3f",
+            "cidr": "10.0.0.0/24",
+            "availabilityZone": "eu-central-1a",
+            "routeTableId": "rtb-03657905c09f9acf4"
+          },
+          {
+            "subnetId": "subnet-06ac95a09637179f2",
+            "cidr": "10.0.1.0/24",
+            "availabilityZone": "eu-central-1b",
+            "routeTableId": "rtb-0fcc720c7368bff6a"
+          }
+        ]
+      }
+    ]
+  },
+  "security-group:account=850482027158:region=eu-central-1:securityGroupId=sg-0157c0729ede03961": {
+    "securityGroupId": "sg-0157c0729ede03961",
+    "allowAllOutbound": false
+  },
+  "security-group:account=850482027158:region=eu-central-1:securityGroupId=sg-00770d30740e4b0bc": {
+    "securityGroupId": "sg-00770d30740e4b0bc",
+    "allowAllOutbound": false
+  },
+  "load-balancer:account=850482027158:loadBalancerArn=arn$:aws:elasticloadbalancing:eu-central-1:850482027158:loadbalancer/app/k8s-additionalalb-da34265135/c266b7772b305218:loadBalancerType=application:region=eu-central-1": {
+    "loadBalancerArn": "arn:aws:elasticloadbalancing:eu-central-1:850482027158:loadbalancer/app/k8s-additionalalb-da34265135/c266b7772b305218",
+    "loadBalancerCanonicalHostedZoneId": "Z215JYRZR1TBD5",
+    "loadBalancerDnsName": "k8s-additionalalb-da34265135-574812204.eu-central-1.elb.amazonaws.com",
+    "vpcId": "vpc-0da29452ce6c52634",
+    "securityGroupIds": [
+      "sg-00770d30740e4b0bc",
+      "sg-08c8a73712521a1ab"
+    ],
+    "ipAddressType": "ipv4"
+  },
+  "security-group:account=850482027158:region=eu-central-1:securityGroupId=sg-08c8a73712521a1ab": {
+    "securityGroupId": "sg-08c8a73712521a1ab",
+    "allowAllOutbound": false
+  },
+  "clusterCreatedLoadBalancerArns": {
+    "ServicePortalLoadBalancerArn": "arn:aws:elasticloadbalancing:eu-central-1:850482027158:loadbalancer/app/k8s-21fmaasservicepor-3e7913aa05/9f6526dd26ac2531",
+    "KeycloakLoadBalancerArn": "arn:aws:elasticloadbalancing:eu-central-1:850482027158:loadbalancer/app/k8s-additionalalb-da34265135/c266b7772b305218",
+    "MarketplaceLoadBalancerArn": "arn:aws:elasticloadbalancing:eu-central-1:850482027158:loadbalancer/app/k8s-21fmaasmarketplac-ddaddc4508/482439555922ca2a",
+    "VaultLoadBalancerArn": "arn:aws:elasticloadbalancing:eu-central-1:850482027158:loadbalancer/app/k8s-vault-deb8b59b53/92724827f2fc62e1"
+  },
+  "organizationAccounts": {
+    "commonResources": {
+      "accountId": "253594432138",
+      "region": "eu-central-1"
+    },
+    "devResources": {
+      "accountId": "850482027158",
+      "region": "eu-central-1"
+    }
+  },
+  "load-balancer:account=850482027158:loadBalancerArn=arn$:aws:elasticloadbalancing:eu-central-1:850482027158:loadbalancer/app/k8s-21fmaasservicepor-3e7913aa05/9f6526dd26ac2531:loadBalancerType=application:region=eu-central-1": {
+    "loadBalancerArn": "arn:aws:elasticloadbalancing:eu-central-1:850482027158:loadbalancer/app/k8s-21fmaasservicepor-3e7913aa05/9f6526dd26ac2531",
+    "loadBalancerCanonicalHostedZoneId": "Z215JYRZR1TBD5",
+    "loadBalancerDnsName": "k8s-21fmaasservicepor-3e7913aa05-1669681283.eu-central-1.elb.amazonaws.com",
+    "vpcId": "vpc-0da29452ce6c52634",
+    "securityGroupIds": [
+      "sg-07306fcbe3fb97887",
+      "sg-00770d30740e4b0bc"
+    ],
+    "ipAddressType": "ipv4"
+  },
+  "security-group:account=850482027158:region=eu-central-1:securityGroupId=sg-07306fcbe3fb97887": {
+    "securityGroupId": "sg-07306fcbe3fb97887",
+    "allowAllOutbound": false
+  },
+  "load-balancer:account=850482027158:loadBalancerArn=arn$:aws:elasticloadbalancing:eu-central-1:850482027158:loadbalancer/app/k8s-marketplacegroup-8e68cc23ff/35adb110928f201f:loadBalancerType=application:region=eu-central-1": {
+    "loadBalancerArn": "arn:aws:elasticloadbalancing:eu-central-1:850482027158:loadbalancer/app/k8s-marketplacegroup-8e68cc23ff/35adb110928f201f",
+    "loadBalancerCanonicalHostedZoneId": "Z215JYRZR1TBD5",
+    "loadBalancerDnsName": "k8s-marketplacegroup-8e68cc23ff-845132616.eu-central-1.elb.amazonaws.com",
+    "vpcId": "vpc-0da29452ce6c52634",
+    "securityGroupIds": [
+      "sg-07a58594d9d4933e6",
+      "sg-00770d30740e4b0bc"
+    ],
+    "ipAddressType": "ipv4"
+  },
+  "security-group:account=850482027158:region=eu-central-1:securityGroupId=sg-07a58594d9d4933e6": {
+    "securityGroupId": "sg-07a58594d9d4933e6",
+    "allowAllOutbound": false
+  },
+  "load-balancer:account=850482027158:loadBalancerArn=arn$:aws:elasticloadbalancing:eu-central-1:850482027158:loadbalancer/app/k8s-vault-deb8b59b53/92724827f2fc62e1:loadBalancerType=application:region=eu-central-1": {
+    "loadBalancerArn": "arn:aws:elasticloadbalancing:eu-central-1:850482027158:loadbalancer/app/k8s-vault-deb8b59b53/92724827f2fc62e1",
+    "loadBalancerCanonicalHostedZoneId": "Z215JYRZR1TBD5",
+    "loadBalancerDnsName": "k8s-vault-deb8b59b53-1776196465.eu-central-1.elb.amazonaws.com",
+    "vpcId": "vpc-0da29452ce6c52634",
+    "securityGroupIds": [
+      "sg-0ffd26493e5a6a8a1",
+      "sg-00770d30740e4b0bc"
+    ],
+    "ipAddressType": "ipv4"
+  },
+  "security-group:account=850482027158:region=eu-central-1:securityGroupId=sg-0ffd26493e5a6a8a1": {
+    "securityGroupId": "sg-0ffd26493e5a6a8a1",
+    "allowAllOutbound": false
+  },
+  "load-balancer:account=850482027158:loadBalancerArn=arn$:aws:elasticloadbalancing:eu-central-1:850482027158:loadbalancer/app/k8s-21fmaasmarketplac-ddaddc4508/482439555922ca2a:loadBalancerType=application:region=eu-central-1": {
+    "loadBalancerArn": "arn:aws:elasticloadbalancing:eu-central-1:850482027158:loadbalancer/app/k8s-21fmaasmarketplac-ddaddc4508/482439555922ca2a",
+    "loadBalancerCanonicalHostedZoneId": "Z215JYRZR1TBD5",
+    "loadBalancerDnsName": "k8s-21fmaasmarketplac-ddaddc4508-1619669764.eu-central-1.elb.amazonaws.com",
+    "vpcId": "vpc-0da29452ce6c52634",
+    "securityGroupIds": [
+      "sg-048e8c11c2c60ee4c",
+      "sg-00770d30740e4b0bc"
+    ],
+    "ipAddressType": "ipv4"
+  },
+  "security-group:account=850482027158:region=eu-central-1:securityGroupId=sg-048e8c11c2c60ee4c": {
+    "securityGroupId": "sg-048e8c11c2c60ee4c",
+    "allowAllOutbound": false
+  }
+}

@@ -1,0 +1,14 @@
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: arq-zipcode-deploy
+  namespace: default
+spec:
+  maxReplicas: 4
+  minReplicas: 0
+  scaleTargetRef:
+    apiVersion: extensions/v1beta1
+    kind: Deployment
+    name: arq-zipcode-deploy
+  targetCPUUtilizationPercentage: 90
+

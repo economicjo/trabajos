@@ -1,0 +1,2678 @@
+openapi: 3.0.3
+info:
+  title: Domain Model Main File
+  description: |
+    
+    This file aggregates all the other QSDL files for the marketplace domain model.
+    
+  version: '1.0'
+servers:
+  - url: '/api/v1'
+tags:
+  - name: Company
+  - name: Person
+  - name: Investor
+  - name: Product
+  - name: Document
+
+paths:  
+  '/legalentities/_find':
+    post:
+      tags:
+        - Company
+      summary: getLegalEntities
+      operationId: getLegalEntities
+      parameters:
+        - name: pagequery
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/PageQuery'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageLegalEntity'
+        default:
+          $ref: '#/components/responses/DefaultError'
+  '/legalentities/{id}':
+    get:
+      tags:
+        - Company
+      summary: getLegalEntity
+      operationId: getLegalEntity
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegalEntity'
+        default:
+          $ref: '#/components/responses/DefaultError'
+  '/naturalpersons/_find':
+    post:
+      tags:
+        - Person
+      summary: getNaturalPersons
+      operationId: getNaturalPersons
+      parameters:
+        - name: pagequery
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/PageQuery'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageNaturalPerson'
+        default:
+          $ref: '#/components/responses/DefaultError'
+  '/naturalpersons/{id}':
+    get:
+      tags:
+        - Person
+      summary: getNaturalPerson
+      operationId: getNaturalPerson
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NaturalPerson'
+        default:
+          $ref: '#/components/responses/DefaultError'
+  '/roles':
+    get:
+      tags:
+        - Person
+      summary: getRoles
+      description: |
+        Fetch all role relationships that have the current user as the actor
+      operationId: getRoles
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NaturalPersonRole'
+        default:
+          $ref: '#/components/responses/DefaultError'
+  '/registerperson':
+    post:
+      tags:
+        - Person
+      summary: registerPerson
+      description: |
+        Annonymous endpoint for first user registration to platform
+      operationId: registerPerson
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NaturalPersonRegistrationData'
+      responses:
+        '200':
+          description: OK
+        default:
+          $ref: '#/components/responses/DefaultError'
+  '/investors/{investorid}/onboarding':
+    get:
+      tags:
+        - Investor
+      summary: getOnboardingModules
+      description: |
+        fetch all modules to guide user through the onboarding
+      operationId: getOnboardingModules
+      parameters:
+        - name: investorid
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OnboardingModules'
+        default:
+          $ref: '#/components/responses/DefaultError'
+  '/investors/{investorid}/onboarding/module':
+    get:
+      tags:
+        - Investor
+      summary: getOnboardingModuleData
+      description: |
+        fetch data for a specific module
+      operationId: getOnboardingModuleData
+      parameters:
+        - name: investorid
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: moduleId
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/OnboardingIdentifierEnum'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OnboardingModule'
+        default:
+          $ref: '#/components/responses/DefaultError'
+    patch:
+      tags:
+        - Investor
+      summary: updateOnboardingModuleData
+      description: |
+        manipulate data for a specific module
+      operationId: updateOnboardingModuleData
+      parameters:
+        - name: investorid
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OnboardingAnswers'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OnboardingModule'
+        default:
+          $ref: '#/components/responses/DefaultError'
+  '/products/_find':
+    post:
+      tags:
+        - Product
+      summary: getProducts
+      operationId: getProducts
+      parameters:
+        - name: pagequery
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/PageQuery'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageProduct'
+        default:
+          $ref: '#/components/responses/DefaultError'
+  '/products/{id}':
+    get:
+      tags:
+        - Product
+      summary: getProduct
+      operationId: getProduct
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        default:
+          $ref: '#/components/responses/DefaultError'
+  '/investors/{investor_id}/bankaccounts/_find':
+    post:
+      tags:
+        - Investor
+      summary: getBankAccounts
+      operationId: getBankAccounts
+      parameters:
+        - name: investor_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: pagequery
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/PageQuery'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageBankAccount'
+        default:
+          $ref: '#/components/responses/DefaultError'
+  '/investors/{investor_id}/bankaccounts/{id}':
+    get:
+      tags:
+        - Investor
+      summary: getBankAccount
+      operationId: getBankAccount
+      parameters:
+        - name: investor_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BankAccount'
+        default:
+          $ref: '#/components/responses/DefaultError'
+  '/investors/{investor_id}/depositaccounts/_find':
+    post:
+      tags:
+        - Investor
+      summary: getDepositAccounts
+      operationId: getDepositAccounts
+      parameters:
+        - name: investor_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: pagequery
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/PageQuery'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageDepositAccount'
+        default:
+          $ref: '#/components/responses/DefaultError'
+  '/investors/{investor_id}/depositaccounts/{id}':
+    get:
+      tags:
+        - Investor
+      summary: getDepositAccount
+      operationId: getDepositAccount
+      parameters:
+        - name: investor_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DepositAccount'
+        default:
+          $ref: '#/components/responses/DefaultError'
+  '/investors/{investor_id}/wallets/_find':
+    post:
+      tags:
+        - Investor
+      summary: getWallets
+      operationId: getWallets
+      parameters:
+        - name: investor_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: pagequery
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/PageQuery'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageWallet'
+        default:
+          $ref: '#/components/responses/DefaultError'
+  '/investors/{investor_id}/wallets/{id}':
+    get:
+      tags:
+        - Investor
+      summary: getWallet
+      operationId: getWallet
+      parameters:
+        - name: investor_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Wallet'
+        default:
+          $ref: '#/components/responses/DefaultError'
+  '/investors/{investor_id}/orders/_find':
+    post:
+      tags:
+        - Investor
+      summary: getOrders
+      operationId: getOrders
+      parameters:
+        - name: investor_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: pagequery
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/PageQuery'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageOrder'
+        default:
+          $ref: '#/components/responses/DefaultError'
+  '/investors/{investor_id}/orders/{id}':
+    get:
+      tags:
+        - Investor
+      summary: getOrder
+      operationId: getOrder
+      parameters:
+        - name: investor_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        default:
+          $ref: '#/components/responses/DefaultError'
+    patch:
+      tags:
+        - Investor
+      summary: updateOrder
+      operationId: updateOrder
+      parameters:
+        - name: investor_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Order'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        default:
+          $ref: '#/components/responses/DefaultError'
+  '/investors/{investor_id}/orders':
+    post:
+      tags:
+        - Investor
+      summary: createOrder
+      operationId: createOrder
+      parameters:
+        - name: investor_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Order'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        default:
+          $ref: '#/components/responses/DefaultError'
+  '/investors/{investor_id}/orders/{id}/confirm':
+    patch:
+      tags:
+        - Investor
+      summary: confirmOrder
+      operationId: confirmOrder
+      parameters:
+        - name: investor_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Order'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        default:
+          $ref: '#/components/responses/DefaultError'
+  '/investors/{investor_id}/orders/{id}/cancel':
+    post:
+      tags:
+        - Investor
+      summary: cancelOrder
+      operationId: cancelOrder
+      parameters:
+        - name: investor_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        default:
+          $ref: '#/components/responses/DefaultError'
+  '/investors/{investor_id}/uploadfile':
+    post:
+      tags:
+        - Document
+      summary: uploadFile
+      operationId: uploadFile
+      parameters:
+        - name: investor_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                docType:
+                  $ref: '#/components/schemas/DocumentTypeEnum'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Document'
+        default:
+          $ref: '#/components/responses/DefaultError'
+  '/investors/{investor_id}/documents':
+    get:
+      tags:
+        - Document
+      summary: getInvestorFiles
+      operationId: getInvestorFiles
+      parameters:
+        - name: investor_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: docType
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/DocumentTypeEnum'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Document'
+        default:
+          $ref: '#/components/responses/DefaultError'
+  '/products/{product_id}/documents':
+    get:
+      tags:
+        - Document
+      summary: getProductFiles
+      operationId: getProductFiles
+      parameters:
+        - name: product_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: docType
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/DocumentTypeEnum'
+        - name: investorId
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Document'
+        default:
+          $ref: '#/components/responses/DefaultError'
+  '/downloadfile/{id}':
+    get:
+      tags:
+        - Document
+      summary: downloadFile
+      operationId: downloadFile
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: investorId
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        default:
+          $ref: '#/components/responses/DefaultError'
+
+components:
+  responses:
+    DefaultError:
+      description: Unexpected error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AppError'
+
+  schemas:
+    CountryCodeEnum:
+      type: string
+      enum:
+        - AD
+        - AE
+        - AF
+        - AG
+        - AI
+        - AL
+        - AM
+        - AO
+        - AQ
+        - AR
+        - AS
+        - AT
+        - AU
+        - AW
+        - AX
+        - AZ
+        - BA
+        - BB
+        - BD
+        - BE
+        - BF
+        - BG
+        - BH
+        - BI
+        - BJ
+        - BL
+        - BM
+        - BN
+        - BO
+        - BQ
+        - BR
+        - BS
+        - BT
+        - BV
+        - BW
+        - BY
+        - BZ
+        - CA
+        - CC
+        - CD
+        - CF
+        - CG
+        - CH
+        - CI
+        - CK
+        - CL
+        - CM
+        - CN
+        - CO
+        - CR
+        - CU
+        - CV
+        - CW
+        - CX
+        - CY
+        - CZ
+        - DE
+        - DJ
+        - DK
+        - DM
+        - DO
+        - DZ
+        - EC
+        - EE
+        - EG
+        - EH
+        - ER
+        - ES
+        - ET
+        - FI
+        - FJ
+        - FK
+        - FM
+        - FO
+        - FR
+        - GA
+        - GB
+        - GD
+        - GE
+        - GF
+        - GG
+        - GH
+        - GI
+        - GL
+        - GM
+        - GN
+        - GP
+        - GQ
+        - GR
+        - GS
+        - GT
+        - GU
+        - GW
+        - GY
+        - HK
+        - HM
+        - HN
+        - HR
+        - HT
+        - HU
+        - ID
+        - IE
+        - IL
+        - IM
+        - IN
+        - IO
+        - IQ
+        - IR
+        - IS
+        - IT
+        - JE
+        - JM
+        - JO
+        - JP
+        - KE
+        - KG
+        - KH
+        - KI
+        - KM
+        - KN
+        - KP
+        - KR
+        - KW
+        - KY
+        - KZ
+        - LA
+        - LB
+        - LC
+        - LI
+        - LK
+        - LR
+        - LS
+        - LT
+        - LU
+        - LV
+        - LY
+        - MA
+        - MC
+        - MD
+        - ME
+        - MF
+        - MG
+        - MH
+        - MK
+        - ML
+        - MM
+        - MN
+        - MO
+        - MP
+        - MQ
+        - MR
+        - MS
+        - MT
+        - MU
+        - MV
+        - MW
+        - MX
+        - MY
+        - MZ
+        - NA
+        - NC
+        - NE
+        - NF
+        - NG
+        - NI
+        - NL
+        - NO
+        - NP
+        - NR
+        - NU
+        - NZ
+        - OM
+        - PA
+        - PE
+        - PF
+        - PG
+        - PH
+        - PK
+        - PL
+        - PM
+        - PN
+        - PR
+        - PS
+        - PT
+        - PW
+        - PY
+        - QA
+        - RE
+        - RO
+        - RS
+        - RU
+        - RW
+        - SA
+        - SB
+        - SC
+        - SD
+        - SE
+        - SG
+        - SH
+        - SI
+        - SJ
+        - SK
+        - SL
+        - SM
+        - SN
+        - SO
+        - SR
+        - SS
+        - ST
+        - SV
+        - SX
+        - SY
+        - SZ
+        - TC
+        - TD
+        - TF
+        - TG
+        - TH
+        - TJ
+        - TK
+        - TL
+        - TM
+        - TN
+        - TO
+        - TR
+        - TT
+        - TV
+        - TW
+        - TZ
+        - UA
+        - UG
+        - UM
+        - US
+        - UY
+        - UZ
+        - VA
+        - VC
+        - VE
+        - VG
+        - VI
+        - VN
+        - VU
+        - WF
+        - WS
+        - YE
+        - YT
+        - ZA
+        - ZM
+        - ZW
+
+    LanguageEnum:
+      type: string
+      enum:
+        - EN
+        - DE
+
+    VerificationStatusEnum:
+      type: string
+      enum:
+        - UNVERIFIED
+        - VERIFIED
+
+    InvestorTypeEnum:
+      type: string
+      enum:
+        - PRIVATE
+        - PROFESSIONAL
+        - SEMI_PROFESSIONAL
+
+    InvestorIdentityEnum:
+      type: string
+      enum:
+        - NATURAL_PERSON
+        - LEGAL_ENTITY
+
+    ExperienceCategoryEnum:
+      type: string
+      enum:
+        - SHARES
+        - FUNDS
+        - BONDS
+        - STRUCTURED_PRODUCTS
+
+    InvestorStatusEnum:
+      type: string
+      enum:
+        - CREATED
+        - REGISTERED
+        - ONBOARDED
+        - IN_VERIFICATION
+        - VERIFIED
+        - INACTIVE
+
+    CurrencyEnum:
+      type: string
+      enum:
+        - EUR
+        - CHF
+        - USD
+        - GBP
+        - JPY
+
+    CryptoProtocolEnum:
+      type: string
+      enum:
+        - BITCOIN
+        - ETHEREUM
+        - POLYGON
+        - STELLAR
+
+    WalletTypeEnum:
+      type: string
+      enum:
+        - OMNIBUS
+        - SEGREGATED
+        - OWN_WALLET
+
+    LegalStatusEnum:
+      type: string
+      enum:
+        - GBR
+        - KG
+        - GMBH
+        - GMBH_COKG
+        - AG
+        - UG
+        - OHG
+        - PARTG
+
+    CompanyRoleEnum:
+      type: string
+      enum:
+        - ISSUER
+        - LIABILITY_UMBRELLA
+        - WALLET_PROVIDER
+        - CUSTODIAN
+        - PAYING_AGENT
+        - TOKENIZER
+        - MARKET_MAKER
+
+    CompanyStatusEnum:
+      type: string
+      enum:
+        - CREATED
+        - ACTIVE
+        - INACTIVE
+        - DEFUNCT
+
+    TitleEnum:
+      type: string
+      enum:
+        - NONE
+        - DR
+        - DR_DR
+        - PROF
+        - PROF_DR
+
+    SalutationEnum:
+      type: string
+      enum:
+        - NONE
+        - MR
+        - MRS
+
+    IdentificationDocumentTypeEnum:
+      type: string
+      enum:
+        - PASSPORT
+        - ID_CARD
+        - DRIVING_LICENSE
+
+    FinancialExperienceTimeEnum:
+      type: string
+      enum:
+        - NONE
+        - LOW
+        - MEDIUM
+        - HIGH
+        - VERY_HIGH
+
+    FinancialTransactionsPerYearEnum:
+      type: string
+      enum:
+        - NONE
+        - FEW
+        - SOME
+        - MANY
+        - VERY_MANY
+
+    FinancialTransactionSizeEnum:
+      type: string
+      enum:
+        - SMALL
+        - MEDIUM
+        - LARGE
+        - VERY_LARGE
+
+    SourceOfFundsTypeEnum:
+      type: string
+      enum:
+        - SALARY
+        - PENSION
+        - CAPITAL_EARNINGS
+        - SAVINGS
+        - INHERITANCE
+        - RENTAL_INCOME
+        - ASSET_DISPOSAL
+        - LOANS
+        - CRYPTOCURRENCIES
+        - OTHER
+
+    OccupationEnum:
+      type: string
+      enum:
+        - BOARD_LEVEL
+        - LEADER
+        - EMPLOYEE_PENSIONER
+        - STUDENT
+
+    EducationEnum:
+      type: string
+      enum:
+        - MASTER_PHD
+        - BACHELOR
+        - SECONDARY_SCHOOL
+        - OTHER
+
+    FinanceFunctionEnum:
+      type: string
+      enum:
+        - NONE
+        - CONTROLLING
+        - FINANCIAL_ADVICE
+        - LEGAL_ADVICE
+
+    AssetAmountEnum:
+      type: string
+      enum:
+        - NOT_SPECIFIED
+        - LOW
+        - HIGH
+        - VERY_HIGH
+
+    InvestmentSumEnum:
+      type: string
+      enum:
+        - NOT_SPECIFIED
+        - LOW
+        - HIGH
+        - VERY_HIGH
+
+    RoleRelationshipEnum:
+      type: string
+      enum:
+        - PRIVATE_INVESTOR
+        - ASSET_MANAGER
+        - SIGNATORY
+        - READ_ONLY_VIEWER
+
+    RoleStatusEnum:
+      type: string
+      enum:
+        - ACTIVE
+        - INACTIVE
+
+    IdentificationProcessStatusEnum:
+      type: string
+      enum:
+        - NOT_STARTED
+        - IN_PROGRESS
+        - USER_ACTION_REQUIRED
+        - FINISHED_SUCCESS
+        - FINISHED_FAILED
+        - ERROR
+
+    OnboardingModuleStatusEnum:
+      type: string
+      enum:
+        - NOT_AVAILABLE
+        - NOT_STARTED
+        - IN_PROGRESS
+        - FINISHED
+
+    OnboardingIdentifierEnum:
+      type: string
+      enum:
+        - NONE
+        - PERSONAL_DATA
+        - PEP_DECLARATION
+        - INVESTOR_CLASSIFICATION
+        - FINANCIAL_KNOWLEDGE
+        - SOURCE_OF_FUNDS_DECLARATION
+        - SOURCE_OF_FUNDS_DOCUMENTS
+        - REFERENCE_ACCOUNT
+        - TAX_INFORMATION
+        - OPEN_FIAT_ACCOUNT
+        - DOCUMENT_IDENTIFICATION
+        - THIRD_PARTY_IDENTIFICATION
+        - TWO_FACTOR_AUTHENTICATION
+        - TRUTHFULNESS
+
+    OnboardingModuleFinishActionEnum:
+      type: string
+      enum:
+        - NONE
+        - NEXT
+        - ASK
+
+    OnboardingQuestionIdentifierEnum:
+      type: string
+      enum:
+        - PERSONAL_DATA_001_FIRST_NAME
+        - PERSONAL_DATA_002_LAST_NAME
+        - PERSONAL_DATA_003_DOB
+        - PERSONAL_DATA_004_RESIDENCE
+        - PERSONAL_DATA_005_SALUTATION
+        - PERSONAL_DATA_006_TITLE
+        - PERSONAL_DATA_007_STREET_NUMBER
+        - PERSONAL_DATA_008_POSTAL_CODE
+        - PERSONAL_DATA_009_CITY
+        - PERSONAL_DATA_010_COUNTRY
+        - PERSONAL_DATA_011_ADDITIONAL
+        - PERSONAL_DATA_012_PHONE_NUMBER
+        - PEP_DECLARATION_001_PEP
+        - INVESTOR_CLASSIFICATION_000_INVESTOR_TYPE
+        - INVESTOR_CLASSIFICATION_001_TOTAL_UNENCUMBERED_PORTFOLIO
+        - INVESTOR_CLASSIFICATION_002_SECURITIES_TX_PAST_12_MONTHS
+        - INVESTOR_CLASSIFICATION_003_AVG_VALUE_PER_SECURITY_EUR
+        - INVESTOR_CLASSIFICATION_004_ACTIVE_IN_AT_LEAST_1_Y
+        - INVESTOR_CLASSIFICATION_005_POSITION_KIND
+        - INVESTOR_CLASSIFICATION_006_PROFESSIONAL_POSITION
+        - INVESTOR_CLASSIFICATION_007_EDUCATIONAL
+        - INVESTOR_CLASSIFICATION_008_GRADING
+        - INVESTOR_CLASSIFICATION_009_INFO_ON_CLASSIFICATION
+        - INVESTOR_CLASSIFICATION_010_GRADING_INFORMATION
+        - INVESTOR_CLASSIFICATION_011_CONFIRMATION_NOTE
+        - INVESTOR_CLASSIFICATION_012_CONGRATULATIONS
+        - DOCUMENT_IDENTIFICATION_001_NATIONALITIES
+        - DOCUMENT_IDENTIFICATION_002_COUNTRY_OF_ISSUE
+        - DOCUMENT_IDENTIFICATION_003_LEGITIMATION_DOC
+        - DOCUMENT_IDENTIFICATION_004_LEGITIMATION_DOC_NUMBER
+        - DOCUMENT_IDENTIFICATION_005_ISSUING_AUTHORITY
+        - DOCUMENT_IDENTIFICATION_006_ISSUE_DATE
+        - DOCUMENT_IDENTIFICATION_007_VALID_UNTIL
+        - DOCUMENT_IDENTIFICATION_008_COUNTRY_OF_BIRTH
+        - DOCUMENT_IDENTIFICATION_009_PLACE_OF_BIRTH
+        - DOCUMENT_IDENTIFICATION_010_ACCURACY
+        - DOCUMENT_IDENTIFICATION_011_ACTING_OF_OWN_ACCOUNT
+        - THIRD_PARTY_IDENTIFICATION_001_STATUS
+        - THIRD_PARTY_IDENTIFICATION_002_VERIFICATION_URL
+
+    ProductClassEnum:
+      type: string
+      enum:
+        - FUND
+        - BOND
+        - STRUCTURED
+        - TOKENIZED
+        - CRYPTOCURRENCY
+
+    ProductCategoryEnum:
+      type: string
+      enum:
+        - ASSET_BACKED_BOND
+        - AIF
+        - UCITS
+        - TRACKER_CERTIFICATE
+        - LEVERAGE_CERTIFICATE
+        - BOND
+        - PROFIT_PARTICIPATION_RIGHT
+        - COIN
+
+    TokenStandardEnum:
+      type: string
+      enum:
+        - ERC_20
+        - ERC_1400
+        - SHA_256
+
+    TokenTypeEnum:
+      type: string
+      enum:
+        - PAYMENT
+        - SECURITY
+        - UTILITY
+
+    ProductAvailabilityStatusEnum:
+      type: string
+      enum:
+        - UNPUBLISHED
+        - BEFORE_ORDERING_PERIOD
+        - INSIDE_ORDERING_PERIOD
+        - AFTER_ORDERING_PERIOD
+        - ARCHIVED
+
+    InvestmentStyleEnum:
+      type: string
+      enum:
+        - PASSIVE
+        - ACTIVE
+
+    ProductTopicEnum:
+      type: string
+      enum:
+        - MOBILITY
+        - ENTERTAINMENT
+        - TECHNOLOGY
+        - BLOCKCHAIN_DLT
+        - E_SPORTS
+        - NUTRITION
+        - REAL_ESTATE
+        - CRYPTOCURRENCIES
+        - PREVIOUS_METALS
+        - LOGISTICS
+        - HEALTH_MEDICINE
+        - AGRICULTURE
+        - STARTUPS
+        - EDUCATION
+        - TOURISM
+        - SUSTAINABILITY_ESG
+        - ARTIFICIAL_INTELLIGENCE
+        - ARTS_CULTURE
+        - TELECOMMUNICATION
+        - SPORT_LIFESTYLE
+        - FINANCE
+        - IT
+
+    BankAccountTypeEnum:
+      type: string
+      enum:
+        - REFERENCE_ACCOUNT
+        - FIAT_ACCOUNT
+        - INVESTOR_OWNED
+
+    OrderStatusEnum:
+      type: string
+      enum:
+        - STARTED
+        - VOLUME_PROVIDED
+        - WAITING_FOR_COLLECTIVE_SIGNATURE
+        - WAITING_FOR_LIABILITY_UMBRELLA
+        - WAITING_FOR_ISSUER
+        - DECLINED
+        - ACCEPTED
+        - WAITING_FOR_PAYMENT_RECEIVED
+        - IN_PROGRESS
+        - COMPLETED
+        - ERROR
+
+    DocumentStatusEnum:
+      type: string
+      enum:
+        - CREATED
+        - PUBLISHED
+        - ARCHIVED
+
+    DocumentDownloadRequirementEnum:
+      type: string
+      enum:
+        - NEVER
+        - ALWAYS
+
+    DocumentTypeEnum:
+      type: string
+      enum:
+        - ONBOARDING_CONTRACT
+        - PRODUCT_INFO
+
+    BaseType:
+      type: object
+      properties:
+        createdBy:
+          type: string
+          readOnly: true
+        creationDate:
+          type: string
+          format: date-time
+          readOnly: true
+        modifiedBy:
+          type: string
+          readOnly: true
+        modificationDate:
+          type: string
+          format: date-time
+          readOnly: true
+        metaInf:
+          type: object
+
+    AddressData:
+      required:
+        - countryCode
+      type: object
+      properties:
+        countryCode:
+          $ref: '#/components/schemas/CountryCodeEnum'
+        areaCode:
+          type: string
+        city:
+          type: string
+        street:
+          type: string
+        postOfficeBox:
+          type: string
+
+    ContactData:
+      required:
+        - email
+      type: object
+      properties:
+        email:
+          type: string
+        phone:
+          type: string
+        mobile:
+          type: string
+        fax:
+          type: string
+
+    TaxData:
+      type: object
+      properties:
+        taxID:
+          type: string
+        taxationCountry:
+          $ref: '#/components/schemas/CountryCodeEnum'
+
+    CompanyData:
+      required:
+        - headOffice
+        - foundationDate
+      type: object
+      properties:
+        headOffice:
+          type: string
+        foundationDate:
+          type: string
+          format: date-time
+        legalStatus:
+          $ref: '#/components/schemas/LegalStatusEnum'
+        registerNo:
+          type: string
+
+    EntityInternalData:
+      type: object
+      properties:
+        addressDataVerified:
+          $ref: '#/components/schemas/VerificationStatusEnum'
+        contactDataVerified:
+          $ref: '#/components/schemas/VerificationStatusEnum'
+        taxDataVerified:
+          $ref: '#/components/schemas/VerificationStatusEnum'
+
+    FinancialExperience:
+      type: object
+      properties:
+        experienceYears:
+          $ref: '#/components/schemas/FinancialExperienceTimeEnum'
+        transactionsPerYear:
+          $ref: '#/components/schemas/FinancialTransactionsPerYearEnum'
+        transactionSize:
+          $ref: '#/components/schemas/FinancialTransactionSizeEnum'
+
+    FinancialKnowledge:
+      type: object
+      properties:
+        productTypes:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExperienceCategoryEnum'
+        shares:
+          $ref: '#/components/schemas/FinancialExperience'
+        funds:
+          $ref: '#/components/schemas/FinancialExperience'
+        bonds:
+          $ref: '#/components/schemas/FinancialExperience'
+        structuredProducts:
+          $ref: '#/components/schemas/FinancialExperience'
+        cryptoCurrencies:
+          $ref: '#/components/schemas/FinancialExperience'
+        notSpecified:
+          type: boolean
+
+    PersonalData:
+      required:
+        - firstName
+        - lastName
+        - dateOfBirth
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        salutation:
+          $ref: '#/components/schemas/SalutationEnum'
+        title:
+          $ref: '#/components/schemas/TitleEnum'
+        dateOfBirth:
+          type: string
+          format: date-time
+        placeOfBirth:
+          type: string
+        countryOfBirth:
+          type: string
+        nationalities:
+          type: array
+          items:
+            $ref: '#/components/schemas/CountryCodeEnum'
+        dateOfDeath:
+          type: string
+          format: date-time
+        politicallyExposedPerson:
+          type: boolean
+
+    PersonInternalData:
+      type: object
+      properties:
+        identityVerified:
+          $ref: '#/components/schemas/VerificationStatusEnum'
+        lastIdentityCheck:
+          type: string
+          format: date-time
+        sourceOfFundsVerified:
+          $ref: '#/components/schemas/VerificationStatusEnum'
+
+    InvestorProfile:
+      type: object
+      properties:
+        occupation:
+          $ref: '#/components/schemas/OccupationEnum'
+        education:
+          $ref: '#/components/schemas/EducationEnum'
+        functionInFinanceSector:
+          $ref: '#/components/schemas/FinanceFunctionEnum'
+        assets:
+          $ref: '#/components/schemas/AssetAmountEnum'
+        investmentSum:
+          $ref: '#/components/schemas/InvestmentSumEnum'
+        investmentExperience:
+          $ref: '#/components/schemas/FinancialExperience'
+
+    InvestorData:
+      type: object
+      properties:
+        typeByKnowledge:
+          $ref: '#/components/schemas/InvestorTypeEnum'
+        typeByChoice:
+          $ref: '#/components/schemas/InvestorTypeEnum'
+        sourceOfFunds:
+          type: array
+          items:
+            $ref: '#/components/schemas/SourceOfFundsTypeEnum'
+        sourceOfFundsFreetext:
+          type: string
+        investorProfile:
+          $ref: '#/components/schemas/InvestorProfile'
+
+    IdentificationDocumentData:
+      required:
+        - documentType
+        - documentNumber
+      type: object
+      properties:
+        documentType:
+          $ref: '#/components/schemas/IdentificationDocumentTypeEnum'
+        documentNumber:
+          type: string
+        issueDate:
+          type: string
+          format: date-time
+        validUntil:
+          type: string
+          format: date-time
+        issuingAuthority:
+          type: string
+        issuingCountry:
+          $ref: '#/components/schemas/CountryCodeEnum'
+        issuingPlace:
+          type: string
+
+    IdentificationProcessData:
+      type: object
+      properties:
+        identID:
+          type: string
+        thirdPartyLink:
+          type: string
+        processStatus:
+          $ref: '#/components/schemas/IdentificationProcessStatusEnum'
+        payloadSent:
+          type: object
+        payloadReceived:
+          type: object
+        startDate:
+          type: string
+          format: date-time
+        expirationDate:
+          type: string
+          format: date-time
+        lastUpdate:
+          type: string
+          format: date-time
+
+    PersonalConfirmations:
+      type: object
+      properties:
+        correctnessOfData:
+          type: boolean
+        actingOnOwnAccount:
+          type: boolean
+        notificationAboutChanges:
+          type: boolean
+        antiMoneyLaundering:
+          type: boolean
+        professionalInvestor:
+          type: boolean
+        investorAgreement:
+          type: boolean
+
+    OnboardingAnswer:
+      required:
+        - identifier
+      type: object
+      properties:
+        identifier:
+          $ref: '#/components/schemas/OnboardingQuestionIdentifierEnum'
+        currentValue:
+          description: |
+            shall be empty if no answer to the question has been provided yet
+          type: string
+
+    OnboardingAnswers:
+      type: object
+      properties:
+        moduleIdentifier:
+          $ref: '#/components/schemas/OnboardingIdentifierEnum'
+        answers:
+          type: array
+          items:
+            $ref: '#/components/schemas/OnboardingAnswer'
+
+    OnboardingQuestion:
+      required:
+        - identifier
+      type: object
+      properties:
+        identifier:
+          $ref: '#/components/schemas/OnboardingQuestionIdentifierEnum'
+        currentValue:
+          description: |
+            shall be empty if no answer to the question has been provided yet
+          type: string
+        availableOptions:
+          description: |
+            for drop-down lists and multi-select options
+          type: array
+          items:
+            type: string
+        minValue:
+          description: |
+            for arbitrary-value type fields
+          type: string
+        maxValue:
+          type: string
+
+    OnboardingModule:
+      required:
+        - identifier
+      type: object
+      properties:
+        identifier:
+          $ref: '#/components/schemas/OnboardingIdentifierEnum'
+        status:
+          $ref: '#/components/schemas/OnboardingModuleStatusEnum'
+        next:
+          description: |
+            id of next module
+          $ref: '#/components/schemas/OnboardingIdentifierEnum'
+        finishAction:
+          description: |
+            whether the next module is optional and the user can exit
+          $ref: '#/components/schemas/OnboardingModuleFinishActionEnum'
+        questions:
+          description: |
+            we'll leave this empty in the module get-all call (getOnboardingModules)
+          type: array
+          items:
+            $ref: '#/components/schemas/OnboardingQuestion'
+
+    OnboardingModules:
+      type: object
+      properties:
+        currentModule:
+          description: |
+            the module id which the user current should be forwarded to - empty means no onboarding required.
+          $ref: '#/components/schemas/OnboardingIdentifierEnum'
+        modules:
+          description: |
+            sorted list of modules in logical ascending order.
+          type: array
+          items:
+            $ref: '#/components/schemas/OnboardingModule'
+
+    ProductClassification:
+      required:
+        - productClass
+        - category
+        - appropriatenessCategory
+      type: object
+      properties:
+        productClass:
+          $ref: '#/components/schemas/ProductClassEnum'
+        category:
+          $ref: '#/components/schemas/ProductCategoryEnum'
+        appropriatenessCategory:
+          $ref: '#/components/schemas/ExperienceCategoryEnum'
+        riskReturn:
+          description: |
+            Risk and Return profile. Should be an integer in the range 1 to 7.
+          type: integer
+          format: int32
+        topics:
+          $ref: '#/components/schemas/ProductTopicEnum'
+
+    ProductAvailability:
+      type: object
+      properties:
+        grouping:
+          type: array
+          items:
+            $ref: '#/components/schemas/InvestorTypeEnum'
+        distribution:
+          type: array
+          items:
+            $ref: '#/components/schemas/InvestorIdentityEnum'
+        countries:
+          type: array
+          items:
+            $ref: '#/components/schemas/CountryCodeEnum'
+        availabilityStatus:
+          $ref: '#/components/schemas/ProductAvailabilityStatusEnum'
+
+    ProductInfo:
+      required:
+        - name
+        - currency
+      type: object
+      properties:
+        name:
+          type: string
+        isin:
+          type: string
+        valor:
+          type: string
+        wkn:
+          type: string
+        withdrawalRight:
+          description: |
+            Time (in days) that the buyer has to exercise right of withdrawal.
+          type: integer
+          format: int32
+        taxNoRequired:
+          type: boolean
+        currency:
+          $ref: '#/components/schemas/CurrencyEnum'
+        issueDate:
+          type: string
+          format: date-time
+        stockExchangeListing:
+          type: boolean
+        investmentStyle:
+          $ref: '#/components/schemas/InvestmentStyleEnum'
+        estimatedSubscriptions:
+          type: integer
+          format: int32
+
+    ProductEntities:
+      required:
+        - issuerID
+      type: object
+      properties:
+        issuerID:
+          description: |
+            foreign key to LegalEntity
+          type: string
+          format: uuid
+        custodianID:
+          description: |
+            foreign key to LegalEntity
+          type: string
+          format: uuid
+        walletProviderID:
+          description: |
+            foreign key to LegalEntity
+          type: string
+          format: uuid
+        payingAgentID:
+          description: |
+            foreign key to LegalEntity
+          type: string
+          format: uuid
+        tokenizerID:
+          description: |
+            foreign key to LegalEntity
+          type: string
+          format: uuid
+        supervisoryAuthority:
+          type: string
+        portfolioManager:
+          type: string
+        managementCompany:
+          type: string
+        investmentManager:
+          type: string
+
+    CryptoProperties:
+      type: object
+      properties:
+        tokenProtocol:
+          $ref: '#/components/schemas/CryptoProtocolEnum'
+        tokenStandard:
+          $ref: '#/components/schemas/TokenStandardEnum'
+        tokenType:
+          $ref: '#/components/schemas/TokenTypeEnum'
+        walletType:
+          $ref: '#/components/schemas/WalletTypeEnum'
+        smartContractID:
+          type: string
+        tokenSymbol:
+          type: string
+          maxLength: 20
+
+    ProductInternalData:
+      type: object
+      properties:
+        automaticAcceptance:
+          type: boolean
+        issuerReporting:
+          type: boolean
+
+    OrderFinancialData:
+      type: object
+      properties:
+        amount:
+          type: integer
+          format: int32
+        currency:
+          $ref: '#/components/schemas/CurrencyEnum'
+        bankAccount:
+          description: |
+            foreign key to bank account
+          type: string
+          format: uuid
+        depositAccount:
+          description: |
+            foreign key to deposit account
+          type: string
+          format: uuid
+        wallet:
+          description: |
+            foreign key to wallet
+          type: string
+          format: uuid
+
+    OrderMandatoryInformation:
+      type: object
+      properties:
+        taxID:
+          type: string
+        liabilityUmbrellaTermsDownloaded:
+          type: boolean
+        productDocumentsDownloaded:
+          type: boolean
+
+    LegalEntity:
+      required:
+        - id
+        - name
+        - status
+        - companyData
+        - addressData
+        - contactData
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        createdBy:
+          type: string
+          readOnly: true
+        creationDate:
+          type: string
+          format: date-time
+          readOnly: true
+        modifiedBy:
+          type: string
+          readOnly: true
+        modificationDate:
+          type: string
+          format: date-time
+          readOnly: true
+        metaInf:
+          type: object
+        name:
+          type: string
+        status:
+          $ref: '#/components/schemas/CompanyStatusEnum'
+        availableRoles:
+          type: array
+          items:
+            $ref: '#/components/schemas/CompanyRoleEnum'
+        companyData:
+          $ref: '#/components/schemas/CompanyData'
+        addressData:
+          $ref: '#/components/schemas/AddressData'
+        contactData:
+          $ref: '#/components/schemas/ContactData'
+        taxData:
+          $ref: '#/components/schemas/TaxData'
+        internalData:
+          $ref: '#/components/schemas/EntityInternalData'
+
+    NaturalPerson:
+      required:
+        - id
+        - status
+        - personalData
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        createdBy:
+          type: string
+          readOnly: true
+        creationDate:
+          type: string
+          format: date-time
+          readOnly: true
+        modifiedBy:
+          type: string
+          readOnly: true
+        modificationDate:
+          type: string
+          format: date-time
+          readOnly: true
+        metaInf:
+          type: object
+        status:
+          $ref: '#/components/schemas/InvestorStatusEnum'
+        personalData:
+          $ref: '#/components/schemas/PersonalData'
+        addressData:
+          $ref: '#/components/schemas/AddressData'
+        contactData:
+          $ref: '#/components/schemas/ContactData'
+        identificationDocument:
+          $ref: '#/components/schemas/IdentificationDocumentData'
+        taxData:
+          $ref: '#/components/schemas/TaxData'
+        financialKnowledge:
+          $ref: '#/components/schemas/FinancialKnowledge'
+        investorData:
+          $ref: '#/components/schemas/InvestorData'
+        internalData:
+          $ref: '#/components/schemas/PersonInternalData'
+        identificationProcessData:
+          $ref: '#/components/schemas/IdentificationProcessData'
+        confirmations:
+          $ref: '#/components/schemas/PersonalConfirmations'
+
+    NaturalPersonRole:
+      required:
+        - id
+        - agentID
+        - clientID
+        - relationship
+        - status
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        createdBy:
+          type: string
+          readOnly: true
+        creationDate:
+          type: string
+          format: date-time
+          readOnly: true
+        modifiedBy:
+          type: string
+          readOnly: true
+        modificationDate:
+          type: string
+          format: date-time
+          readOnly: true
+        metaInf:
+          type: object
+        agentID:
+          description: |
+            foreign key to NaturalPerson
+          type: string
+          format: uuid
+        clientID:
+          description: |
+            foreign key to NaturalPerson or LegalEntity
+          type: string
+          format: uuid
+        relationship:
+          $ref: '#/components/schemas/RoleRelationshipEnum'
+        status:
+          $ref: '#/components/schemas/RoleStatusEnum'
+
+    NaturalPersonRegistrationData:
+      required:
+        - id
+        - firstName
+        - lastName
+        - birthDate
+        - residence
+        - email
+        - password
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        firstName:
+          type: string
+          minLength: 3
+          maxLength: 50
+        lastName:
+          type: string
+          minLength: 3
+          maxLength: 50
+        birthDate:
+          type: string
+          format: date-time
+        residence:
+          $ref: '#/components/schemas/CountryCodeEnum'
+        email:
+          type: string
+        password:
+          type: string
+          minLength: 8
+          maxLength: 50
+          writeOnly: true
+
+    Product:
+      required:
+        - id
+        - domicile
+        - productInfo
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        createdBy:
+          type: string
+          readOnly: true
+        creationDate:
+          type: string
+          format: date-time
+          readOnly: true
+        modifiedBy:
+          type: string
+          readOnly: true
+        modificationDate:
+          type: string
+          format: date-time
+          readOnly: true
+        metaInf:
+          type: object
+        domicile:
+          $ref: '#/components/schemas/CountryCodeEnum'
+        productInfo:
+          $ref: '#/components/schemas/ProductInfo'
+        classification:
+          $ref: '#/components/schemas/ProductClassification'
+        availability:
+          $ref: '#/components/schemas/ProductAvailability'
+        linkedEntities:
+          $ref: '#/components/schemas/ProductEntities'
+        crypto:
+          $ref: '#/components/schemas/CryptoProperties'
+        internalData:
+          $ref: '#/components/schemas/ProductInternalData'
+
+    BankAccount:
+      required:
+        - id
+        - iban
+        - currency
+        - accountType
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        iban:
+          type: string
+        currency:
+          type: string
+        bank:
+          type: string
+        swiftBic:
+          type: string
+        beneficiary:
+          type: string
+        accountType:
+          $ref: '#/components/schemas/BankAccountTypeEnum'
+        referenceCode:
+          type: string
+
+    DepositAccount:
+      required:
+        - id
+        - depositNo
+        - bank
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        depositNo:
+          type: string
+        bank:
+          type: string
+        bankContact:
+          type: string
+        beneficiary:
+          type: string
+
+    Wallet:
+      required:
+        - id
+        - walletType
+        - protocol
+        - address
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        walletType:
+          $ref: '#/components/schemas/WalletTypeEnum'
+        protocol:
+          $ref: '#/components/schemas/CryptoProtocolEnum'
+        address:
+          type: string
+        beneficiary:
+          type: string
+
+    PageInvestor:
+      required:
+        - content
+      type: object
+      properties:
+        totalPages:
+          type: integer
+          format: int32
+        totalElements:
+          type: integer
+          format: int64
+        size:
+          type: integer
+          format: int32
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/Investor'
+        number:
+          type: integer
+          format: int32
+        sort:
+          $ref: '#/components/schemas/Sort'
+        first:
+          type: boolean
+        last:
+          type: boolean
+        numberOfElements:
+          type: integer
+          format: int32
+        pageable:
+          $ref: '#/components/schemas/Pageable'
+        empty:
+          type: boolean
+
+    Investor:
+      required:
+        - id
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+
+    Order:
+      required:
+        - id
+        - status
+        - productID
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        createdBy:
+          type: string
+          readOnly: true
+        creationDate:
+          type: string
+          format: date-time
+          readOnly: true
+        modifiedBy:
+          type: string
+          readOnly: true
+        modificationDate:
+          type: string
+          format: date-time
+          readOnly: true
+        metaInf:
+          type: object
+        status:
+          $ref: '#/components/schemas/OrderStatusEnum'
+        productID:
+          description: |
+            foreign key to product
+          type: string
+          format: uuid
+        financialData:
+          $ref: '#/components/schemas/OrderFinancialData'
+        mandatoryInformation:
+          $ref: '#/components/schemas/OrderMandatoryInformation'
+
+    Document:
+      required:
+        - id
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        createdBy:
+          type: string
+          readOnly: true
+        creationDate:
+          type: string
+          format: date-time
+          readOnly: true
+        modifiedBy:
+          type: string
+          readOnly: true
+        modificationDate:
+          type: string
+          format: date-time
+          readOnly: true
+        metaInf:
+          type: object
+        productId:
+          description: |
+            foreign key to product
+          type: string
+          format: uuid
+        investorId:
+          description: |
+            foreign key to person/company
+          type: string
+          format: uuid
+        orderId:
+          description: |
+            foreign key to order
+          type: string
+          format: uuid
+        documentReferenceId:
+          description: |
+            foreign key to document
+          type: string
+          format: uuid
+        docType:
+          $ref: '#/components/schemas/DocumentTypeEnum'
+        originalFileName:
+          type: string
+        internalFileName:
+          type: string
+        displayFileName:
+          type: string
+        isTemplate:
+          type: boolean
+        status:
+          $ref: '#/components/schemas/DocumentStatusEnum'
+        language:
+          $ref: '#/components/schemas/LanguageEnum'
+        downloadRequired:
+          $ref: '#/components/schemas/DocumentDownloadRequirementEnum'
+        archiveDate:
+          type: string
+          format: date-time
+        sequence:
+          type: integer
+          format: int32
+
+    PageLegalEntity:
+      required:
+        - content
+      type: object
+      properties:
+        totalPages:
+          type: integer
+          format: int32
+        totalElements:
+          type: integer
+          format: int64
+        size:
+          type: integer
+          format: int32
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/LegalEntity'
+        number:
+          type: integer
+          format: int32
+        sort:
+          $ref: '#/components/schemas/Sort'
+        first:
+          type: boolean
+        last:
+          type: boolean
+        numberOfElements:
+          type: integer
+          format: int32
+        pageable:
+          $ref: '#/components/schemas/Pageable'
+        empty:
+          type: boolean
+
+    PageNaturalPerson:
+      required:
+        - content
+      type: object
+      properties:
+        totalPages:
+          type: integer
+          format: int32
+        totalElements:
+          type: integer
+          format: int64
+        size:
+          type: integer
+          format: int32
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/NaturalPerson'
+        number:
+          type: integer
+          format: int32
+        sort:
+          $ref: '#/components/schemas/Sort'
+        first:
+          type: boolean
+        last:
+          type: boolean
+        numberOfElements:
+          type: integer
+          format: int32
+        pageable:
+          $ref: '#/components/schemas/Pageable'
+        empty:
+          type: boolean
+
+    PageProduct:
+      required:
+        - content
+      type: object
+      properties:
+        totalPages:
+          type: integer
+          format: int32
+        totalElements:
+          type: integer
+          format: int64
+        size:
+          type: integer
+          format: int32
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+        number:
+          type: integer
+          format: int32
+        sort:
+          $ref: '#/components/schemas/Sort'
+        first:
+          type: boolean
+        last:
+          type: boolean
+        numberOfElements:
+          type: integer
+          format: int32
+        pageable:
+          $ref: '#/components/schemas/Pageable'
+        empty:
+          type: boolean
+
+    PageBankAccount:
+      required:
+        - content
+      type: object
+      properties:
+        totalPages:
+          type: integer
+          format: int32
+        totalElements:
+          type: integer
+          format: int64
+        size:
+          type: integer
+          format: int32
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/BankAccount'
+        number:
+          type: integer
+          format: int32
+        sort:
+          $ref: '#/components/schemas/Sort'
+        first:
+          type: boolean
+        last:
+          type: boolean
+        numberOfElements:
+          type: integer
+          format: int32
+        pageable:
+          $ref: '#/components/schemas/Pageable'
+        empty:
+          type: boolean
+
+    PageDepositAccount:
+      required:
+        - content
+      type: object
+      properties:
+        totalPages:
+          type: integer
+          format: int32
+        totalElements:
+          type: integer
+          format: int64
+        size:
+          type: integer
+          format: int32
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/DepositAccount'
+        number:
+          type: integer
+          format: int32
+        sort:
+          $ref: '#/components/schemas/Sort'
+        first:
+          type: boolean
+        last:
+          type: boolean
+        numberOfElements:
+          type: integer
+          format: int32
+        pageable:
+          $ref: '#/components/schemas/Pageable'
+        empty:
+          type: boolean
+
+    PageWallet:
+      required:
+        - content
+      type: object
+      properties:
+        totalPages:
+          type: integer
+          format: int32
+        totalElements:
+          type: integer
+          format: int64
+        size:
+          type: integer
+          format: int32
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/Wallet'
+        number:
+          type: integer
+          format: int32
+        sort:
+          $ref: '#/components/schemas/Sort'
+        first:
+          type: boolean
+        last:
+          type: boolean
+        numberOfElements:
+          type: integer
+          format: int32
+        pageable:
+          $ref: '#/components/schemas/Pageable'
+        empty:
+          type: boolean
+
+    PageOrder:
+      required:
+        - content
+      type: object
+      properties:
+        totalPages:
+          type: integer
+          format: int32
+        totalElements:
+          type: integer
+          format: int64
+        size:
+          type: integer
+          format: int32
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/Order'
+        number:
+          type: integer
+          format: int32
+        sort:
+          $ref: '#/components/schemas/Sort'
+        first:
+          type: boolean
+        last:
+          type: boolean
+        numberOfElements:
+          type: integer
+          format: int32
+        pageable:
+          $ref: '#/components/schemas/Pageable'
+        empty:
+          type: boolean
+
+    Sort:
+      type: object
+      properties:
+        empty:
+          type: boolean
+        sorted:
+          type: boolean
+        unsorted:
+          type: boolean
+
+    PageQuery:
+      type: object
+      properties:
+        page:
+          type: integer
+          format: int32
+        sort:
+          type: string
+        size:
+          type: integer
+          format: int32
+
+    Pageable:
+      type: object
+      properties:
+        offset:
+          type: integer
+          format: int64
+        sort:
+          $ref: '#/components/schemas/Sort'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        paged:
+          type: boolean
+        unpaged:
+          type: boolean
+
+    AppError:
+      required:
+        - message
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        status:
+          description: The HTTP response code
+          type: string
+        error:
+          description: A identifier that categorizes the error
+          type: string
+        traceId:
+          description: Correlation trace id
+          type: string
+        message:
+          description: A brief, human-readable message about the error
+          type: string
+        details:
+          description: Detailed explanations of the error
+          type: object
+          additionalProperties:
+            type: string
+        

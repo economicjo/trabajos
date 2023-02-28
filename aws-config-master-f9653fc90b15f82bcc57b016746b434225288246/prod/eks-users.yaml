@@ -1,0 +1,59 @@
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: eks-readonly-user-role
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - '*'
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - extensions
+  resources:
+  - '*'
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - apps
+  resources:
+  - '*'
+  verbs:
+  - get
+  - list
+  - watch  
+- apiGroups:
+  - autoscaling
+  resources:
+  - '*'
+  verbs:
+  - get
+  - list
+  - watch   
+- apiGroups:
+  - coordination.k8s.io
+  resources:
+  - '*'
+  verbs:
+  - get
+  - list
+  - watch   
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: eks-readonly-user-role-binding
+subjects:
+- kind: User
+  name: danieljoel.burllaile@tendam.es
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: eks-readonly-user-role
+  apiGroup: rbac.authorization.k8s.io
+

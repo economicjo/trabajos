@@ -1,0 +1,42 @@
+image: docker:latest
+services:
+  - docker:dind
+
+stages:
+  - build
+  - upload
+
+workflow:
+  rules:
+    - if: $CI_MERGE_REQUEST_ID && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"
+    - if: $CI_COMMIT_BRANCH == "main"
+
+variables:
+  CLI_TOOLS_IMAGE_NAME: registry.gitlab.com/21.financeag/sw-development/infrastructure/cli-tools
+
+cli-tools-build:
+  stage: build
+  rules:
+    - changes:
+        - pipeline-utils/*
+  script:
+    - docker build -t ${CLI_TOOLS_IMAGE_NAME}:latest -f $(pwd)/pipeline-utils/cli-tools/Dockerfile $(pwd)/pipeline-utils/cli-tools
+    - mkdir images
+    - docker save ${CLI_TOOLS_IMAGE_NAME} > images/cli-tools.tar
+  artifacts:
+    paths:
+      - images
+
+cli-tools-upload:
+  stage: upload
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+      changes:
+        - pipeline-utils/*
+  before_script:
+    - docker load -i images/cli-tools.tar
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - VERSION=$(head -n 1 pipeline-utils/cli-tools/VERSION.txt)
+    - docker tag ${CLI_TOOLS_IMAGE_NAME}:latest ${CLI_TOOLS_IMAGE_NAME}:${VERSION}
+    - docker push --all-tags $CLI_TOOLS_IMAGE_NAME

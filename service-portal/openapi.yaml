@@ -1,0 +1,1333 @@
+openapi: 3.0.3
+info:
+  title: Domain Model Main File
+  description: |
+    
+    This file aggregates all the other QSDL files for the service-portal domain model.
+    
+  version: '1.0'
+servers:
+  - url: '/api/v1'
+tags:
+  - name: Company
+  - name: Product
+  - name: Document
+
+paths:  
+  '/legalentitys/_find':
+    post:
+      tags:
+        - Company
+      summary: List LegalEntitys
+      operationId: getLegalentitys
+      parameters:
+        - name: pagequery
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/PageQuery'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageLegalEntity'
+        default:
+          $ref: '#/components/responses/DefaultError'
+  '/legalentitys':
+    post:
+      tags:
+        - Company
+      summary: Create a LegalEntity
+      operationId: createLegalentity
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LegalEntity'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegalEntity'
+        default:
+          $ref: '#/components/responses/DefaultError'
+  '/legalentitys/{id}':
+    get:
+      tags:
+        - Company
+      summary: Read the specified LegalEntity
+      operationId: getLegalentity
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegalEntity'
+        default:
+          $ref: '#/components/responses/DefaultError'
+    patch:
+      tags:
+        - Company
+      summary: Update the specified LegalEntity
+      operationId: patchLegalentity
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LegalEntity'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegalEntity'
+        default:
+          $ref: '#/components/responses/DefaultError'
+    delete:
+      tags:
+        - Company
+      summary: Delete the specified LegalEntity
+      operationId: deleteLegalentity
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+        default:
+          $ref: '#/components/responses/DefaultError'
+  '/products/_find':
+    post:
+      tags:
+        - Product
+      summary: List Products
+      operationId: getProducts
+      parameters:
+        - name: pagequery
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/PageQuery'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageProduct'
+        default:
+          $ref: '#/components/responses/DefaultError'
+  '/products':
+    post:
+      tags:
+        - Product
+      summary: Create a Product
+      operationId: createProduct
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        default:
+          $ref: '#/components/responses/DefaultError'
+  '/products/{id}':
+    get:
+      tags:
+        - Product
+      summary: Read the specified Product
+      operationId: getProduct
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        default:
+          $ref: '#/components/responses/DefaultError'
+    patch:
+      tags:
+        - Product
+      summary: Update the specified Product
+      operationId: patchProduct
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        default:
+          $ref: '#/components/responses/DefaultError'
+    delete:
+      tags:
+        - Product
+      summary: Delete the specified Product
+      operationId: deleteProduct
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+        default:
+          $ref: '#/components/responses/DefaultError'
+  '/investors/{investor_id}/uploadfile':
+    post:
+      tags:
+        - Document
+      summary: uploadFile
+      operationId: uploadFile
+      parameters:
+        - name: investor_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                docType:
+                  $ref: '#/components/schemas/DocumentTypeEnum'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Document'
+        default:
+          $ref: '#/components/responses/DefaultError'
+  '/investors/{investor_id}/documents':
+    get:
+      tags:
+        - Document
+      summary: getInvestorFiles
+      operationId: getInvestorFiles
+      parameters:
+        - name: investor_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: docType
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/DocumentTypeEnum'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Document'
+        default:
+          $ref: '#/components/responses/DefaultError'
+  '/products/{product_id}/documents':
+    get:
+      tags:
+        - Document
+      summary: getProductFiles
+      operationId: getProductFiles
+      parameters:
+        - name: product_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: docType
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/DocumentTypeEnum'
+        - name: investorId
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Document'
+        default:
+          $ref: '#/components/responses/DefaultError'
+  '/downloadfile/{id}':
+    get:
+      tags:
+        - Document
+      summary: downloadFile
+      operationId: downloadFile
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: investorId
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        default:
+          $ref: '#/components/responses/DefaultError'
+
+components:
+  responses:
+    DefaultError:
+      description: Unexpected error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AppError'
+
+  schemas:
+    CountryCodeEnum:
+      type: string
+      enum:
+        - AD
+        - AE
+        - AF
+        - AG
+        - AI
+        - AL
+        - AM
+        - AO
+        - AQ
+        - AR
+        - AS
+        - AT
+        - AU
+        - AW
+        - AX
+        - AZ
+        - BA
+        - BB
+        - BD
+        - BE
+        - BF
+        - BG
+        - BH
+        - BI
+        - BJ
+        - BL
+        - BM
+        - BN
+        - BO
+        - BQ
+        - BR
+        - BS
+        - BT
+        - BV
+        - BW
+        - BY
+        - BZ
+        - CA
+        - CC
+        - CD
+        - CF
+        - CG
+        - CH
+        - CI
+        - CK
+        - CL
+        - CM
+        - CN
+        - CO
+        - CR
+        - CU
+        - CV
+        - CW
+        - CX
+        - CY
+        - CZ
+        - DE
+        - DJ
+        - DK
+        - DM
+        - DO
+        - DZ
+        - EC
+        - EE
+        - EG
+        - EH
+        - ER
+        - ES
+        - ET
+        - FI
+        - FJ
+        - FK
+        - FM
+        - FO
+        - FR
+        - GA
+        - GB
+        - GD
+        - GE
+        - GF
+        - GG
+        - GH
+        - GI
+        - GL
+        - GM
+        - GN
+        - GP
+        - GQ
+        - GR
+        - GS
+        - GT
+        - GU
+        - GW
+        - GY
+        - HK
+        - HM
+        - HN
+        - HR
+        - HT
+        - HU
+        - ID
+        - IE
+        - IL
+        - IM
+        - IN
+        - IO
+        - IQ
+        - IR
+        - IS
+        - IT
+        - JE
+        - JM
+        - JO
+        - JP
+        - KE
+        - KG
+        - KH
+        - KI
+        - KM
+        - KN
+        - KP
+        - KR
+        - KW
+        - KY
+        - KZ
+        - LA
+        - LB
+        - LC
+        - LI
+        - LK
+        - LR
+        - LS
+        - LT
+        - LU
+        - LV
+        - LY
+        - MA
+        - MC
+        - MD
+        - ME
+        - MF
+        - MG
+        - MH
+        - MK
+        - ML
+        - MM
+        - MN
+        - MO
+        - MP
+        - MQ
+        - MR
+        - MS
+        - MT
+        - MU
+        - MV
+        - MW
+        - MX
+        - MY
+        - MZ
+        - NA
+        - NC
+        - NE
+        - NF
+        - NG
+        - NI
+        - NL
+        - NO
+        - NP
+        - NR
+        - NU
+        - NZ
+        - OM
+        - PA
+        - PE
+        - PF
+        - PG
+        - PH
+        - PK
+        - PL
+        - PM
+        - PN
+        - PR
+        - PS
+        - PT
+        - PW
+        - PY
+        - QA
+        - RE
+        - RO
+        - RS
+        - RU
+        - RW
+        - SA
+        - SB
+        - SC
+        - SD
+        - SE
+        - SG
+        - SH
+        - SI
+        - SJ
+        - SK
+        - SL
+        - SM
+        - SN
+        - SO
+        - SR
+        - SS
+        - ST
+        - SV
+        - SX
+        - SY
+        - SZ
+        - TC
+        - TD
+        - TF
+        - TG
+        - TH
+        - TJ
+        - TK
+        - TL
+        - TM
+        - TN
+        - TO
+        - TR
+        - TT
+        - TV
+        - TW
+        - TZ
+        - UA
+        - UG
+        - UM
+        - US
+        - UY
+        - UZ
+        - VA
+        - VC
+        - VE
+        - VG
+        - VI
+        - VN
+        - VU
+        - WF
+        - WS
+        - YE
+        - YT
+        - ZA
+        - ZM
+        - ZW
+
+    LanguageEnum:
+      type: string
+      enum:
+        - EN
+        - DE
+
+    VerificationStatusEnum:
+      type: string
+      enum:
+        - UNVERIFIED
+        - VERIFIED
+
+    InvestorTypeEnum:
+      type: string
+      enum:
+        - PRIVATE
+        - PROFESSIONAL
+        - SEMI_PROFESSIONAL
+
+    InvestorIdentityEnum:
+      type: string
+      enum:
+        - NATURAL_PERSON
+        - LEGAL_ENTITY
+
+    ExperienceCategoryEnum:
+      type: string
+      enum:
+        - SHARES
+        - FUNDS
+        - BONDS
+        - STRUCTURED_PRODUCTS
+
+    InvestorStatusEnum:
+      type: string
+      enum:
+        - CREATED
+        - REGISTERED
+        - ONBOARDED
+        - IN_VERIFICATION
+        - VERIFIED
+        - INACTIVE
+
+    CurrencyEnum:
+      type: string
+      enum:
+        - EUR
+        - CHF
+        - USD
+        - GBP
+        - JPY
+
+    CryptoProtocolEnum:
+      type: string
+      enum:
+        - BITCOIN
+        - ETHEREUM
+        - POLYGON
+        - STELLAR
+
+    WalletTypeEnum:
+      type: string
+      enum:
+        - OMNIBUS
+        - SEGREGATED
+        - OWN_WALLET
+
+    LegalStatusEnum:
+      type: string
+      enum:
+        - GBR
+        - KG
+        - GMBH
+        - GMBH_COKG
+        - AG
+        - UG
+        - OHG
+        - PARTG
+
+    CompanyRoleEnum:
+      type: string
+      enum:
+        - ISSUER
+        - LIABILITY_UMBRELLA
+        - WALLET_PROVIDER
+        - CUSTODIAN
+        - PAYING_AGENT
+        - TOKENIZER
+        - MARKET_MAKER
+
+    CompanyStatusEnum:
+      type: string
+      enum:
+        - CREATED
+        - ACTIVE
+        - INACTIVE
+        - DEFUNCT
+
+    ProductClassEnum:
+      type: string
+      enum:
+        - FUND
+        - BOND
+        - STRUCTURED
+        - TOKENIZED
+        - CRYPTOCURRENCY
+
+    ProductCategoryEnum:
+      type: string
+      enum:
+        - ASSET_BACKED_BOND
+        - AIF
+        - UCITS
+        - TRACKER_CERTIFICATE
+        - LEVERAGE_CERTIFICATE
+        - BOND
+        - PROFIT_PARTICIPATION_RIGHT
+        - COIN
+
+    TokenStandardEnum:
+      type: string
+      enum:
+        - ERC_20
+        - ERC_1400
+        - SHA_256
+
+    TokenTypeEnum:
+      type: string
+      enum:
+        - PAYMENT
+        - SECURITY
+        - UTILITY
+
+    ProductAvailabilityStatusEnum:
+      type: string
+      enum:
+        - UNPUBLISHED
+        - BEFORE_ORDERING_PERIOD
+        - INSIDE_ORDERING_PERIOD
+        - AFTER_ORDERING_PERIOD
+        - ARCHIVED
+
+    InvestmentStyleEnum:
+      type: string
+      enum:
+        - PASSIVE
+        - ACTIVE
+
+    ProductTopicEnum:
+      type: string
+      enum:
+        - MOBILITY
+        - ENTERTAINMENT
+        - TECHNOLOGY
+        - BLOCKCHAIN_DLT
+        - E_SPORTS
+        - NUTRITION
+        - REAL_ESTATE
+        - CRYPTOCURRENCIES
+        - PREVIOUS_METALS
+        - LOGISTICS
+        - HEALTH_MEDICINE
+        - AGRICULTURE
+        - STARTUPS
+        - EDUCATION
+        - TOURISM
+        - SUSTAINABILITY_ESG
+        - ARTIFICIAL_INTELLIGENCE
+        - ARTS_CULTURE
+        - TELECOMMUNICATION
+        - SPORT_LIFESTYLE
+        - FINANCE
+        - IT
+
+    DocumentStatusEnum:
+      type: string
+      enum:
+        - CREATED
+        - PUBLISHED
+        - ARCHIVED
+
+    DocumentDownloadRequirementEnum:
+      type: string
+      enum:
+        - NEVER
+        - ALWAYS
+
+    DocumentTypeEnum:
+      type: string
+      enum:
+        - ONBOARDING_CONTRACT
+        - PRODUCT_INFO
+
+    BaseType:
+      type: object
+      properties:
+        createdBy:
+          type: string
+          readOnly: true
+        creationDate:
+          type: string
+          format: date-time
+          readOnly: true
+        modifiedBy:
+          type: string
+          readOnly: true
+        modificationDate:
+          type: string
+          format: date-time
+          readOnly: true
+        metaInf:
+          type: object
+
+    AddressData:
+      required:
+        - countryCode
+      type: object
+      properties:
+        countryCode:
+          $ref: '#/components/schemas/CountryCodeEnum'
+        areaCode:
+          type: string
+        city:
+          type: string
+        street:
+          type: string
+        postOfficeBox:
+          type: string
+
+    ContactData:
+      required:
+        - email
+      type: object
+      properties:
+        email:
+          type: string
+        phone:
+          type: string
+        mobile:
+          type: string
+        fax:
+          type: string
+
+    TaxData:
+      type: object
+      properties:
+        taxID:
+          type: string
+        taxationCountry:
+          $ref: '#/components/schemas/CountryCodeEnum'
+
+    CompanyData:
+      required:
+        - headOffice
+        - foundationDate
+      type: object
+      properties:
+        headOffice:
+          type: string
+        foundationDate:
+          type: string
+          format: date-time
+        legalStatus:
+          $ref: '#/components/schemas/LegalStatusEnum'
+        registerNo:
+          type: string
+
+    EntityInternalData:
+      type: object
+      properties:
+        addressDataVerified:
+          $ref: '#/components/schemas/VerificationStatusEnum'
+        contactDataVerified:
+          $ref: '#/components/schemas/VerificationStatusEnum'
+        taxDataVerified:
+          $ref: '#/components/schemas/VerificationStatusEnum'
+
+    ProductClassification:
+      required:
+        - productClass
+        - category
+        - appropriatenessCategory
+      type: object
+      properties:
+        productClass:
+          $ref: '#/components/schemas/ProductClassEnum'
+        category:
+          $ref: '#/components/schemas/ProductCategoryEnum'
+        appropriatenessCategory:
+          $ref: '#/components/schemas/ExperienceCategoryEnum'
+        riskReturn:
+          description: |
+            Risk and Return profile. Should be an integer in the range 1 to 7.
+          type: integer
+          format: int32
+        topics:
+          $ref: '#/components/schemas/ProductTopicEnum'
+
+    ProductAvailability:
+      type: object
+      properties:
+        grouping:
+          type: array
+          items:
+            $ref: '#/components/schemas/InvestorTypeEnum'
+        distribution:
+          type: array
+          items:
+            $ref: '#/components/schemas/InvestorIdentityEnum'
+        countries:
+          type: array
+          items:
+            $ref: '#/components/schemas/CountryCodeEnum'
+        availabilityStatus:
+          $ref: '#/components/schemas/ProductAvailabilityStatusEnum'
+
+    ProductInfo:
+      required:
+        - name
+        - currency
+      type: object
+      properties:
+        name:
+          type: string
+        isin:
+          type: string
+        valor:
+          type: string
+        wkn:
+          type: string
+        withdrawalRight:
+          description: |
+            Time (in days) that the buyer has to exercise right of withdrawal.
+          type: integer
+          format: int32
+        taxNoRequired:
+          type: boolean
+        currency:
+          $ref: '#/components/schemas/CurrencyEnum'
+        issueDate:
+          type: string
+          format: date-time
+        stockExchangeListing:
+          type: boolean
+        investmentStyle:
+          $ref: '#/components/schemas/InvestmentStyleEnum'
+        estimatedSubscriptions:
+          type: integer
+          format: int32
+
+    ProductEntities:
+      required:
+        - issuerID
+      type: object
+      properties:
+        issuerID:
+          description: |
+            foreign key to LegalEntity
+          type: string
+          format: uuid
+        custodianID:
+          description: |
+            foreign key to LegalEntity
+          type: string
+          format: uuid
+        walletProviderID:
+          description: |
+            foreign key to LegalEntity
+          type: string
+          format: uuid
+        payingAgentID:
+          description: |
+            foreign key to LegalEntity
+          type: string
+          format: uuid
+        tokenizerID:
+          description: |
+            foreign key to LegalEntity
+          type: string
+          format: uuid
+        supervisoryAuthority:
+          type: string
+        portfolioManager:
+          type: string
+        managementCompany:
+          type: string
+        investmentManager:
+          type: string
+
+    CryptoProperties:
+      type: object
+      properties:
+        tokenProtocol:
+          $ref: '#/components/schemas/CryptoProtocolEnum'
+        tokenStandard:
+          $ref: '#/components/schemas/TokenStandardEnum'
+        tokenType:
+          $ref: '#/components/schemas/TokenTypeEnum'
+        walletType:
+          $ref: '#/components/schemas/WalletTypeEnum'
+        smartContractID:
+          type: string
+        tokenSymbol:
+          type: string
+          maxLength: 20
+
+    ProductInternalData:
+      type: object
+      properties:
+        automaticAcceptance:
+          type: boolean
+        issuerReporting:
+          type: boolean
+
+    PageLegalEntity:
+      required:
+        - content
+      type: object
+      properties:
+        totalPages:
+          type: integer
+          format: int32
+        totalElements:
+          type: integer
+          format: int64
+        size:
+          type: integer
+          format: int32
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/LegalEntity'
+        number:
+          type: integer
+          format: int32
+        sort:
+          $ref: '#/components/schemas/Sort'
+        first:
+          type: boolean
+        last:
+          type: boolean
+        numberOfElements:
+          type: integer
+          format: int32
+        pageable:
+          $ref: '#/components/schemas/Pageable'
+        empty:
+          type: boolean
+
+    LegalEntity:
+      required:
+        - id
+        - name
+        - status
+        - companyData
+        - addressData
+        - contactData
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        createdBy:
+          type: string
+          readOnly: true
+        creationDate:
+          type: string
+          format: date-time
+          readOnly: true
+        modifiedBy:
+          type: string
+          readOnly: true
+        modificationDate:
+          type: string
+          format: date-time
+          readOnly: true
+        metaInf:
+          type: object
+        name:
+          type: string
+        status:
+          $ref: '#/components/schemas/CompanyStatusEnum'
+        availableRoles:
+          type: array
+          items:
+            $ref: '#/components/schemas/CompanyRoleEnum'
+        companyData:
+          $ref: '#/components/schemas/CompanyData'
+        addressData:
+          $ref: '#/components/schemas/AddressData'
+        contactData:
+          $ref: '#/components/schemas/ContactData'
+        taxData:
+          $ref: '#/components/schemas/TaxData'
+        internalData:
+          $ref: '#/components/schemas/EntityInternalData'
+
+    PageProduct:
+      required:
+        - content
+      type: object
+      properties:
+        totalPages:
+          type: integer
+          format: int32
+        totalElements:
+          type: integer
+          format: int64
+        size:
+          type: integer
+          format: int32
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+        number:
+          type: integer
+          format: int32
+        sort:
+          $ref: '#/components/schemas/Sort'
+        first:
+          type: boolean
+        last:
+          type: boolean
+        numberOfElements:
+          type: integer
+          format: int32
+        pageable:
+          $ref: '#/components/schemas/Pageable'
+        empty:
+          type: boolean
+
+    Product:
+      required:
+        - id
+        - domicile
+        - productInfo
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        createdBy:
+          type: string
+          readOnly: true
+        creationDate:
+          type: string
+          format: date-time
+          readOnly: true
+        modifiedBy:
+          type: string
+          readOnly: true
+        modificationDate:
+          type: string
+          format: date-time
+          readOnly: true
+        metaInf:
+          type: object
+        domicile:
+          $ref: '#/components/schemas/CountryCodeEnum'
+        productInfo:
+          $ref: '#/components/schemas/ProductInfo'
+        classification:
+          $ref: '#/components/schemas/ProductClassification'
+        availability:
+          $ref: '#/components/schemas/ProductAvailability'
+        linkedEntities:
+          $ref: '#/components/schemas/ProductEntities'
+        crypto:
+          $ref: '#/components/schemas/CryptoProperties'
+        internalData:
+          $ref: '#/components/schemas/ProductInternalData'
+
+    Document:
+      required:
+        - id
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        createdBy:
+          type: string
+          readOnly: true
+        creationDate:
+          type: string
+          format: date-time
+          readOnly: true
+        modifiedBy:
+          type: string
+          readOnly: true
+        modificationDate:
+          type: string
+          format: date-time
+          readOnly: true
+        metaInf:
+          type: object
+        productId:
+          description: |
+            foreign key to product
+          type: string
+          format: uuid
+        investorId:
+          description: |
+            foreign key to person/company
+          type: string
+          format: uuid
+        orderId:
+          description: |
+            foreign key to order
+          type: string
+          format: uuid
+        documentReferenceId:
+          description: |
+            foreign key to document
+          type: string
+          format: uuid
+        docType:
+          $ref: '#/components/schemas/DocumentTypeEnum'
+        originalFileName:
+          type: string
+        internalFileName:
+          type: string
+        displayFileName:
+          type: string
+        isTemplate:
+          type: boolean
+        status:
+          $ref: '#/components/schemas/DocumentStatusEnum'
+        language:
+          $ref: '#/components/schemas/LanguageEnum'
+        downloadRequired:
+          $ref: '#/components/schemas/DocumentDownloadRequirementEnum'
+        archiveDate:
+          type: string
+          format: date-time
+        sequence:
+          type: integer
+          format: int32
+
+    Sort:
+      type: object
+      properties:
+        empty:
+          type: boolean
+        sorted:
+          type: boolean
+        unsorted:
+          type: boolean
+
+    PageQuery:
+      type: object
+      properties:
+        page:
+          type: integer
+          format: int32
+        sort:
+          type: string
+        size:
+          type: integer
+          format: int32
+
+    Pageable:
+      type: object
+      properties:
+        offset:
+          type: integer
+          format: int64
+        sort:
+          $ref: '#/components/schemas/Sort'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        paged:
+          type: boolean
+        unpaged:
+          type: boolean
+
+    AppError:
+      required:
+        - message
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        status:
+          description: The HTTP response code
+          type: string
+        error:
+          description: A identifier that categorizes the error
+          type: string
+        traceId:
+          description: Correlation trace id
+          type: string
+        message:
+          description: A brief, human-readable message about the error
+          type: string
+        details:
+          description: Detailed explanations of the error
+          type: object
+          additionalProperties:
+            type: string
+        

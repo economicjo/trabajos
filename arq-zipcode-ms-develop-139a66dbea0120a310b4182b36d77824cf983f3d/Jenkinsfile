@@ -1,0 +1,52 @@
+pipeline {
+   agent any
+
+   environment {
+      // Get env based on the folder where the job is located
+      // TODO: improve adding function in shared library
+      ENV = sh(script: "echo $WORKSPACE | cut -d'/' -f6 | cut -c1-3 | tr '[:upper:]' '[:lower:]'", , returnStdout: true).trim()
+   }
+
+   stages {
+      stage('Build application') {
+         when {
+            expression { env.ENV == 'dev'}
+         }         
+         steps {
+            withMaven(maven: 'Maven 3.5.0', jdk: 'JDK8', globalMavenSettingsFilePath: '/opt/apache-maven/conf/settings-aws.xml') {
+                sh "mvn -f ./ARQ_Zipcode_WS/pom.xml versions:set -DnewVersion=$BRANCH"
+                sh "mvn -f ./ARQ_Zipcode_WS/pom.xml -DskipTests clean package -U"
+            }
+         }
+      }
+      stage('Build docker image') {
+         when {
+            expression { env.ENV == 'dev'}
+         }         
+         steps {
+            sh "docker build --build-arg APP_VERSION=$BRANCH . -t arq-zipcode-ws:$BRANCH"
+            sh "docker tag arq-zipcode-ws:$BRANCH 757992231822.dkr.ecr.eu-west-1.amazonaws.com/arq-zipcode-ws:$BRANCH"
+         }
+      }   
+      stage('Push image to AWS') {
+         when {
+            expression { env.ENV == 'dev'}
+         }         
+         steps {
+            withDockerRegistry(credentialsId: 'ecr:eu-west-1:jenkins_aws', url: 'https://757992231822.dkr.ecr.eu-west-1.amazonaws.com') {
+                sh "docker push 757992231822.dkr.ecr.eu-west-1.amazonaws.com/arq-zipcode-ws:$BRANCH"
+            }
+         }
+      } 
+      stage('Deploy to k8s') {
+         steps {
+            ansiblePlaybook(installation: 'Ansible 2.8', 
+                            playbook: 'ansible-deploy.yml',
+                            extraVars: [
+                                version: "$BRANCH",
+								        env: "$ENV"
+                            ]);
+         }
+      }       
+   }
+}

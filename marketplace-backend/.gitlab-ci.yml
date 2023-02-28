@@ -1,0 +1,21 @@
+stages:
+  - test
+  - trigger
+
+# If there are changes in backend subdirectories, it triggers backend/.gitlab-ci.yml
+Marketplace backend:
+  stage: trigger
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      changes:
+      - backend/**/*
+    - if: $CI_COMMIT_BRANCH == "main"
+      changes:
+      - backend/**/*
+  trigger:
+    include: backend/.gitlab-ci.yml
+    strategy: depend
+
+include:
+  - template: Security/SAST-IaC.latest.gitlab-ci.yml
+  - template: Secret-Detection.gitlab-ci.yml    

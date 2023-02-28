@@ -1,0 +1,36 @@
+{
+  "extends": "@antfu",
+  "ignorePatterns": [
+    "/*",
+    "!/src",
+    "src/api/backend/**",
+    "*.json"
+  ],
+  "rules": {
+    "vue/component-tags-order": [
+      "error",
+      {
+        "order": [
+          "template",
+          "script",
+          "style"
+        ]
+      }
+    ],
+    "vue/max-attributes-per-line": [
+      "error",
+      {
+        "singleline": {
+          "max": 5
+        },
+        "multiline": {
+          "max": 1
+        }
+      }
+    ],
+    "vue/custom-event-name-casing": [
+      "error",
+      "kebab-case"
+    ]
+  }
+}
