@@ -1,0 +1,85 @@
+version: '3.7'
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  proxynet:
+    name: maas_network
+
+services:
+  database: 
+    image: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./utils/postgres:/docker-entrypoint-initdb.d
+    environment:
+      POSTGRES_MULTIPLE_DATABASES: marketplace,keycloak,service-portal
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - 5432:5432
+    networks:
+      - proxynet
+  service-portal.backend:
+    image: 850482027158.dkr.ecr.eu-central-1.amazonaws.com/21f-maas-service-portal-dev-backend:latest
+    command: 
+      - "--spring.datasource.url=jdbc:postgresql://database:5432/service-portal"
+      - "--spring.datasource.username=postgres"
+      - "--spring.datasource.password=postgres"
+      - "--spring.jpa.hibernate.ddl-auto=create"
+      - "--spring.flyway.enabled=false"
+      - "--spring.h2.console.enabled=false"
+      - "--logging.config="
+    ports:
+      - 8081:8080
+    networks:
+      - proxynet
+
+  service-portal.frontend:
+    image: 850482027158.dkr.ecr.eu-central-1.amazonaws.com/21f-maas-marketplace-dev-frontend:latest
+    volumes:
+      - ./utils/nginx/nginx.conf:/etc/nginx/templates/default.conf.template
+    environment:
+      NGINX_PORT: 80
+      NGINX_HOST: localhost
+      # BACKEND_URL: http://service-portal.dev.maas.alpha.area2invest.li/api/v1
+      BACKEND_URL: http://localhost:8081/api/v1
+    ports:
+      - 8001:80
+    networks:
+      - proxynet
+    depends_on:
+      - service-portal.backend   
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:legacy
+    volumes:
+      - ./utils/keycloak:/config
+    environment:
+      DB_VENDOR: POSTGRES
+      DB_ADDR: postgres
+      DB_DATABASE: keycloak
+      DB_SCHEMA: public
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
+      # Uncomment the line below if you want to specify JDBC parameters. The parameter below is just an example, and it shouldn't be used in production without knowledge. It is highly recommended that you read the PostgreSQL JDBC driver documentation in order to use it.
+      #JDBC_PARAMS: "ssl=true"
+      KEYCLOAK_IMPORT: /config
+    ports:
+      - 8070:8080
+    networks:
+      - proxynet
+    depends_on:
+      - postgres
+
+
+
+
+
+
+
+         

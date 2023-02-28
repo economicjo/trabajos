@@ -1,0 +1,48 @@
+AWSTemplateFormatVersion: '2010-09-09-OC'
+Description: Organization setup for 21.Finance AWS account.
+
+Organization:
+  MasterAccount:
+    Type: OC::ORG::MasterAccount
+    Properties:
+      AccountName: '21.finance' 
+      AccountId: '253594432138'
+      RootEmail: t.brandstetter@21.finance
+
+  OrganizationRoot:
+    Type: OC::ORG::OrganizationRoot
+    Properties:
+      DefaultOrganizationAccessRoleName: OrganizationAccountAccessRole
+
+  DevelopmentOU:
+    Type: OC::ORG::OrganizationalUnit
+    Properties:
+      OrganizationalUnitName: SDLC
+      Accounts:
+      - !Ref DevelopmentAccount
+      - !Ref 21fInternal
+
+  StagingOU:
+    Type: OC::ORG::OrganizationalUnit
+    Properties:
+      OrganizationalUnitName: Staging
+      Accounts:
+      - !Ref StagingAccount
+
+  DevelopmentAccount:
+    Type: OC::ORG::Account
+    Properties:
+      AccountName: Development
+      RootEmail: aws-development@21.finance
+      
+  StagingAccount:
+    Type: OC::ORG::Account
+    Properties:
+      AccountName: Staging
+      RootEmail: aws-staging@21.finance
+  
+  21fInternal:
+    Type: OC::ORG::Account
+    Properties:
+      AccountName: '21.finance.internal'
+      RootEmail: aws-internal@21.finance

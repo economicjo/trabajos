@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="es.tendam.eco.zipcode.dao.ZipcodeDAO">
+	
+	<select  id="getZipcodeInfo" resultType="ZipcodeResult" parameterType="ZipcodeCriteria">
+		select country_iso as country, zip_code as zipcode, city, region
+		from postal_codes
+		where lower(country_iso) = lower(#{country}) and
+		<choose>
+			<when test="likeQuery == true">
+				lower (#{zipcode}) like lower(zip_code)				
+			</when>
+			<otherwise>
+			lower(zip_code) = lower(#{zipcode})				
+			</otherwise>
+		</choose>
+	</select>
+	
+</mapper>

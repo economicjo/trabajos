@@ -1,0 +1,16 @@
+stages:
+  - trigger
+
+# If there are changes in pipeline-utils subdirectories, it triggers pipeline-utils/.gitlab-ci.yml
+pipeline-utils:
+  stage: trigger
+  rules:
+    - if: $CI_MERGE_REQUEST_ID && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"
+      changes:
+        - pipeline-utils/**/*
+    - if: $CI_COMMIT_BRANCH == "main"
+      changes:
+        - pipeline-utils/**/*
+  trigger:
+    include: pipeline-utils/.gitlab-ci.yml
+    strategy: depend

@@ -1,0 +1,33 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+metadata:
+    name: eks-tendam-dev
+    region: eu-west-1
+    version: "1.17"
+nodeGroups:
+    - name: eks-ng-tendam-spot-dev
+      minSize: 0
+      maxSize: 2
+      desiredCapacity: 1
+      privateNetworking: true
+      instancesDistribution:
+        instanceTypes: ["t3.medium"]
+        onDemandBaseCapacity: 0
+        onDemandPercentageAboveBaseCapacity: 0
+        spotAllocationStrategy: lowest-price
+      ssh:
+        allow: true
+        publicKeyName: 'eks-keypair-tendam-dev'
+      labels:
+        role: worker
+        type: spot
+        env: dev
+      tags:
+        k8s.io/cluster-autoscaler/node-template/label/role: worker
+        k8s.io/cluster-autoscaler/node-template/label/type: spot
+        k8s.io/cluster-autoscaler/node-template/label/env: dev
+      iam:
+        withAddonPolicies:
+          autoScaler: true
+          cloudWatch: true
+          albIngress: true

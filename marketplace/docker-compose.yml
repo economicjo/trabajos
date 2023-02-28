@@ -1,0 +1,115 @@
+version: '3'
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  proxynet:
+    name: maas_network
+
+services:
+
+  postgres:
+    image: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./utils/postgres:/docker-entrypoint-initdb.d
+    environment:
+      POSTGRES_MULTIPLE_DATABASES: marketplace,keycloak
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - 5432:5432
+    networks:
+      proxynet:
+        aliases:
+          - mp-postgres
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:legacy
+    volumes:
+      - ./utils/keycloak/:/config/
+    environment:
+      DB_VENDOR: POSTGRES
+      DB_ADDR: mp-postgres
+      DB_DATABASE: keycloak
+      DB_SCHEMA: public
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
+      # Uncomment the line below if you want to specify JDBC parameters. The parameter below is just an example, and it shouldn't be used in production without knowledge. It is highly recommended that you read the PostgreSQL JDBC driver documentation in order to use it.
+      #JDBC_PARAMS: "ssl=true"
+      KEYCLOAK_IMPORT: /config/keycloak-realm.json
+    ports:
+      - 8070:8080
+    networks:
+      proxynet:
+        aliases:
+          - mp-keycloak
+    depends_on:
+      - postgres
+
+  backend:
+    build:
+      context: backend/
+      dockerfile: Dockerfile
+      target: final
+    image: ${BACKEND_DOCKER_IMAGE_NAME}
+    command: 
+      - "--spring.datasource.url=jdbc:postgresql://mp-postgres:5432/marketplace"
+      - "--spring.datasource.username=postgres"
+      - "--spring.datasource.password=postgres"
+      - "--spring.jpa.hibernate.ddl-auto=none"
+      - "--spring.flyway.enabled=true"
+      - "--spring.h2.console.enabled=false"
+      - "--logging.config="
+    environment:
+      #
+      IDP_USERNAME: "admin"
+      IDP_PASSWORD: "admin"
+      IDP_GRANT_TYPE: "password"
+      IDP_CLIENT_ID: "admin-cli"
+      IDP_ACCESS_TOKEN_URL: "http://mp-keycloak:8080/auth/realms/master/protocol/openid-connect/token"
+      IDP_CREATE_USER_URL: "http://mp-keycloak:8080/auth/admin/realms/maas/users"
+      #
+      KYC_BASE_URL: ""
+      KYC_AUTH: ""
+      KYC_PUBLIC_KEY: ""
+      KYC_PRIVATE_KEY: ""
+      KYC_KEY_HASH: ""
+      KYC_WEBHOOK_URL: ""
+    ports:
+      - 8080:8080
+    networks:
+      proxynet:
+        aliases:
+          - mp-backend
+    depends_on:
+      - keycloak
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - VITE_KEYCLOAK_URL=http://localhost:8070/auth
+        - VITE_KEYCLOAK_REALM=maas
+        - VITE_KEYCLOAK_CLIENTID=maas-client
+    image: ${FRONTEND_DOCKER_IMAGE_NAME}
+    volumes:
+      - ./utils/nginx/nginx.conf:/etc/nginx/templates/default.conf.template
+    environment:
+      NGINX_PORT: 80
+      NGINX_HOST: localhost
+      # BACKEND_URL: http://marketplace.dev.maas.alpha.area2invest.li/api/v1
+      BACKEND_URL: http://mp-backend:8080/api/v1
+    ports:
+      - 8000:80
+    networks:
+      proxynet:
+        aliases:
+          - mp-frontend
+    depends_on:
+      - backend

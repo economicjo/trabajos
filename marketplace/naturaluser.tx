@@ -1,0 +1,48 @@
+title: "Natural user API"
+version: "1.0"
+description: """
+Natural user registration and IPS verification service.  
+"""
+
+servers: ["/api/v1"]
+
+
+enum CountryCodeEnum @domain(package:"naturaluser") {
+    DE
+    AT
+    CH
+    LI
+}
+
+enum VerificationStatusEnum @domain(package:"naturaluser") {
+    NOT_STARTED
+    PENDING
+    ACCEPTED
+    DENIED
+}
+
+type NaturalUser @domain(package:"naturaluser") {
+    firstName: String! @minSize(3) @maxSize(50)
+    lastName: String! @minSize(3) @maxSize(50)
+    birthDate: Date! 
+    residence: CountryCodeEnum!
+    email: String!
+    password: String! @minSize(8) @maxSize(50) @writeOnly
+}
+
+type IpsVerification @domain(package:"naturaluser") @withoutApi {
+    identId: String!
+    naturalUser: NaturalUser!
+    verificationLink: String!
+    verificationStatus: VerificationStatusEnum!
+    ipsVerificationStatus: String!
+    payloadSent: String
+    payloadReceived: String
+    createDate: Date!
+    lastUpdate: Date!
+}
+
+extend Api {
+    getNaturalUserIpsVerification(): IpsVerification @path(value:"/naturalusers/{id}/verification") @method(value: GET)
+    verifyNaturaluser(): IpsVerification @path(value:"/naturalusers/{id}/verification") @method(value: POST)
+}

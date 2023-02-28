@@ -1,0 +1,27 @@
+versioning:
+  stage: preparation
+  image:
+    name: gittools/gitversion
+    entrypoint: ['']
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main" 
+  variables:
+    # GitLab CI's default cloning strategy is highly optimized and not compatible with Gitversion
+    GIT_STRATEGY: none
+  script:
+    - |
+      # will filter out all blobs (file contents) until needed by Git
+      git clone --filter=blob:none --no-checkout $CI_REPOSITORY_URL $CI_PROJECT_DIR
+      git checkout $CI_COMMIT_SHA GitVersion.yml || true
+
+      /tools/dotnet-gitversion /url $CI_REPOSITORY_URL /u gitlab-ci-token /p $CI_JOB_TOKEN /b $CI_COMMIT_REF_NAME /c $CI_COMMIT_SHA /dynamicRepoLocation $CI_PROJECT_DIR $VERBOSITYSETTING | tee thisversion.json
+
+      for keyval in $( grep -E '": [^\{]' thisversion.json | sed -e 's/: /=/' -e "s/\(\,\)$//"); do
+        echo "export $keyval"
+        eval export $keyval
+      done
+
+      echo "SemVer=${SemVer}" >> thisversion.env
+  artifacts:
+    reports:
+      dotenv: thisversion.env

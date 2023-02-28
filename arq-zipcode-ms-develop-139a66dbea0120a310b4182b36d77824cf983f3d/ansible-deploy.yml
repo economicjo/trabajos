@@ -1,0 +1,34 @@
+---
+  - hosts: esmadsrv2010
+    gather_facts: false
+    vars:
+      version: "{{version}}"
+      env: "{{env}}"
+    tasks:
+      - name: Remove k8s deployment
+        k8s:
+          state: absent
+          definition: "{{ lookup('file', 'k8s/arq-zipcode-deployment.yml') | replace ('TAG',version) | replace ('ENVR',env) }}"
+          kubeconfig: "/home/jenkins/.kube/config.{{env}}"
+          namespace: default
+        when: env == "dev"
+      - name: Update deploy
+        k8s:
+          state: present
+          definition: "{{ lookup('file', 'k8s/arq-zipcode-deployment.yml') | replace ('TAG',version) | replace ('ENVR',env) }}"
+          kubeconfig: "/home/jenkins/.kube/config.{{env}}"
+          namespace: default
+      - name: Update service
+        k8s:
+          state: present
+          definition: "{{ lookup('file', 'k8s/arq-zipcode-service.yml')}}"
+          kubeconfig: "/home/jenkins/.kube/config.{{env}}"
+          namespace: default     
+      - name: Update scale
+        k8s:
+          state: present
+          definition: "{{ lookup('file', 'k8s/arq-zipcode-scale.yml')}}"
+          kubeconfig: "/home/jenkins/.kube/config.{{env}}"
+          namespace: default                         
+
+          
